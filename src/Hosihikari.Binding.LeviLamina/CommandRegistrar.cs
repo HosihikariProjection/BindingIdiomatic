@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using InteropCommandRegistrar = Hosihikari.Bindings.LeviLamina.Interop.ll.command.CommandRegistrar;
 
 namespace Hosihikari.Binding.LeviLamina;
@@ -13,19 +15,39 @@ public sealed class CommandRegistrar : IInteropBridge<InteropCommandRegistrar>
 
     private CommandRegistrar(InteropCommandRegistrar interop) => _interop = interop;
 
-    /// <summary>The server-side registrar.</summary>
-    public static CommandRegistrar ServerInstance => From(InteropCommandRegistrar.getServerInstance());
+    /// <summary>The server-side registrar, registered on the caller's default scope.</summary>
+    public static CommandRegistrar ServerInstance => From(InteropCommandRegistrar.getServerInstance(), CallerScope());
 
-    /// <summary>The registrar for a side.</summary>
+    /// <summary>The registrar for a side, registered on the caller's default scope.</summary>
     /// <param name="isClientSide">Whether the client-side registrar is wanted.</param>
     public static CommandRegistrar Instance(bool isClientSide) =>
-        From(InteropCommandRegistrar.getInstance(isClientSide));
+        From(InteropCommandRegistrar.getInstance(isClientSide), CallerScope());
 
-    /// <summary>Bridges an Interop wrapper.</summary>
-    public static CommandRegistrar From(InteropCommandRegistrar interop)
+    /// <summary>The server-side registrar on an explicit scope.</summary>
+    /// <param name="scope">The scope that owns the bridged identity.</param>
+    public static CommandRegistrar ServerInstanceOn(BindingScope scope) =>
+        From(InteropCommandRegistrar.getServerInstance(), scope);
+
+    /// <summary>Bridges an Interop wrapper, reusing the instance already registered for the target.</summary>
+    /// <param name="interop">The wrapper to bridge.</param>
+    /// <param name="scope">The scope owning the identity registry.</param>
+    public static CommandRegistrar From(InteropCommandRegistrar interop, BindingScope scope)
     {
         ArgumentNullException.ThrowIfNull(interop);
-        return new CommandRegistrar(interop);
+        var identities = BindingScope.Require(scope).Identities
+            ?? throw new InvalidOperationException("The scope does not track identities.");
+
+        var generation = scope.Generations?.GenerationOf(interop.Handle) ?? 0;
+        var existing = identities.TryGet<CommandRegistrar>(interop.Handle, generation);
+        if (existing is not null)
+        {
+            existing._interop = interop;
+            return existing;
+        }
+
+        var created = new CommandRegistrar(interop);
+        identities.GetOrAdd(interop.Handle, generation, () => created);
+        return created;
     }
 
     /// <inheritdoc/>
@@ -78,6 +100,13 @@ public sealed class CommandRegistrar : IInteropBridge<InteropCommandRegistrar>
         Hosihikari.Bindings.LeviLamina.Interop.CommandFlag flag,
         Hosihikari.Bindings.Abi.SharedHandle? mod) =>
         Interop.getOrCreateCommand(name, description, requirement, flag, mod);
+
+    /// <summary>
+    /// The caller's default scope. Kept out of line because Assembly.GetCallingAssembly is
+    /// unreliable once the property is inlined.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static BindingScope CallerScope() => BindingScope.For(Assembly.GetCallingAssembly());
 
     /// <summary>Invalidates this instance. The native registrar is untouched.</summary>
     public void Dispose() => _interop = null;

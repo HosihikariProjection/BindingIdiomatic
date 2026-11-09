@@ -29,4 +29,6 @@ Nothing switches threads for you. Game object affinity is documented on each mem
 
 ## Current state
 
-Scaffold plus the shared base. The first manifest batch names the LeviLamina service/command/event entry points and the Endstone player/server/item types; their wrappers land next. Bedrock has an empty manifest.
+The shared base, the Endstone player/server/item/level types and the LeviLamina service, command and event entry points are in. Bedrock has an empty manifest.
+
+`scripts/run-runtime-smoke.ps1 -ServerRoot <bds>` loads the layer inside a real BDS process and checks the bridge, identity reuse, scope reclaim and handler isolation.

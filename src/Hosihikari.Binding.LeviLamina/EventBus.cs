@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using InteropEventBus = Hosihikari.Bindings.LeviLamina.Interop.ll.@event.EventBus;
 using InteropEventIdView = Hosihikari.Bindings.LeviLamina.Interop.ll.@event.EventIdView;
 using InteropSharedHandle = Hosihikari.Bindings.Abi.SharedHandle;
@@ -15,14 +17,33 @@ public sealed class EventBus : IInteropBridge<InteropEventBus>
 
     private EventBus(InteropEventBus interop) => _interop = interop;
 
-    /// <summary>The bus instance.</summary>
-    public static EventBus Instance => From(InteropEventBus.getInstance());
+    /// <summary>The bus instance, registered on the caller's default scope.</summary>
+    public static EventBus Instance => From(InteropEventBus.getInstance(), CallerScope());
 
-    /// <summary>Bridges an Interop wrapper.</summary>
-    public static EventBus From(InteropEventBus interop)
+    /// <summary>The bus instance, registered on an explicit scope.</summary>
+    /// <param name="scope">The scope that owns the bridged identity.</param>
+    public static EventBus InstanceOn(BindingScope scope) => From(InteropEventBus.getInstance(), scope);
+
+    /// <summary>Bridges an Interop wrapper, reusing the instance already registered for the target.</summary>
+    /// <param name="interop">The wrapper to bridge.</param>
+    /// <param name="scope">The scope owning the identity registry.</param>
+    public static EventBus From(InteropEventBus interop, BindingScope scope)
     {
         ArgumentNullException.ThrowIfNull(interop);
-        return new EventBus(interop);
+        var identities = BindingScope.Require(scope).Identities
+            ?? throw new InvalidOperationException("The scope does not track identities.");
+
+        var generation = scope.Generations?.GenerationOf(interop.Handle) ?? 0;
+        var existing = identities.TryGet<EventBus>(interop.Handle, generation);
+        if (existing is not null)
+        {
+            existing._interop = interop;
+            return existing;
+        }
+
+        var created = new EventBus(interop);
+        identities.GetOrAdd(interop.Handle, generation, () => created);
+        return created;
     }
 
     /// <inheritdoc/>
@@ -75,6 +96,13 @@ public sealed class EventBus : IInteropBridge<InteropEventBus>
         string modName,
         Hosihikari.Bindings.LeviLamina.Interop.ll.@event.Event @event,
         InteropEventIdView eventId) => Interop.publish(modName, @event, eventId);
+
+    /// <summary>
+    /// The caller's default scope. Kept out of line because Assembly.GetCallingAssembly is
+    /// unreliable once the property is inlined.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static BindingScope CallerScope() => BindingScope.For(Assembly.GetCallingAssembly());
 
     /// <summary>Invalidates this instance. The native bus is untouched.</summary>
     public void Dispose() => _interop = null;
