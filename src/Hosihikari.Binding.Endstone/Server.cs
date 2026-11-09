@@ -1,3 +1,6 @@
+using System.Reflection;
+using System.Runtime.CompilerServices;
+
 namespace Hosihikari.Binding.Endstone;
 
 /// <summary>The running server.</summary>
@@ -101,7 +104,7 @@ public sealed class Server : IInteropBridge<InteropServer>
                 return Array.Empty<Player>();
             }
 
-            var scope = BindingScope.For(typeof(Server).Assembly);
+            var scope = CallerScope();
             var players = new Player[handles.Length];
             for (var index = 0; index < handles.Length; index++)
             {
@@ -149,7 +152,7 @@ public sealed class Server : IInteropBridge<InteropServer>
         get
         {
             var wrapper = Interop.getPlayer(name);
-            return wrapper is null ? null : Player.From(wrapper, BindingScope.For(typeof(Server).Assembly));
+            return wrapper is null ? null : Player.From(wrapper, CallerScope());
         }
     }
 
@@ -161,9 +164,16 @@ public sealed class Server : IInteropBridge<InteropServer>
         {
             ArgumentNullException.ThrowIfNull(id);
             var wrapper = Interop.getPlayer(id.Interop);
-            return wrapper is null ? null : Player.From(wrapper, BindingScope.For(typeof(Server).Assembly));
+            return wrapper is null ? null : Player.From(wrapper, CallerScope());
         }
     }
+
+    /// <summary>
+    /// The caller's default scope. Kept out of line because Assembly.GetCallingAssembly is
+    /// unreliable once the getter is inlined.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static BindingScope CallerScope() => BindingScope.For(Assembly.GetCallingAssembly());
 
     /// <summary>Broadcasts a raw message.</summary>
     public void Broadcast(Bindings.Endstone.Interop.Variant_228e24a8 message) => Interop.broadcastMessage(message);
