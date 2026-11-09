@@ -1,7 +1,8 @@
 类型全名	形态	保留为方法的成员及原因
 Hosihikari.Binding.Endstone.endstone.Player	属性; 方法	无 Create，实例经借用到达并走混合类型规则（类型实现 IDisposable，借用的 Dispose 只失效自身）；get*/is*/has* 折成属性；send* 系列合并为同名字符串重载方法族（有副作用、多参数）
 Hosihikari.Binding.Endstone.endstone.Server	属性; 方法; 索引器	Create 是 stub（类无可访问析构），Server 只能借用到达；get* 折成属性；getOnlinePlayers 包成 IReadOnlyList<Player>；getPlayer 折成索引器；broadcast/dispatchCommand 保留方法
-Hosihikari.Binding.Endstone.endstone.ItemStack	属性; 方法; 运算符; 构造函数	三个 Create 走构造函数重载；amount/data/type/maxStackSize 折成属性；operator_equal/not_equal 折成 ==/!=，operator_assign 折成赋值方法
+Hosihikari.Binding.Endstone.endstone.ItemStack	属性; 方法; 运算符	借用版；不给 Create；get* 折成属性；operator_equal/not_equal 折成 ==/!=；CopyOf 转拥有版
+Hosihikari.Binding.Endstone.endstone.OwnedItemStack	属性; 方法; 运算符; 构造函数	拥有版；Create 走构造函数；即可写属性写回原生；Dispose 销毁原生栈；==/!= 同借用版
 Hosihikari.Binding.Endstone.endstone.Level	属性; 方法	无 Create，借用到达；get*/is* 折成属性；setTime 保留方法；getActors 为 nint[] 暂留
 Hosihikari.Binding.Endstone.endstone.UUID	属性; 方法	无 Create，借用到达；isNil/version 折成属性；begin/end/str/swap 保留方法（返回 nint 与多步操作）
 Hosihikari.Binding.Endstone.endstone.CommandMap	属性; 方法; 构造函数	Create 走构造函数；getCommand 折成索引器；dispatch/registerCommand/clearCommands 保留方法（有副作用）；operator_assign 折成赋值方法

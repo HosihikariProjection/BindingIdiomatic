@@ -29,11 +29,22 @@ INTEROP_ROOTS = {
 
 
 def to_interop_name(name: str, surface: str) -> str:
-    """Rewrite a manifest name from the singular root to the checked-in plural Interop root."""
+    """Rewrite a manifest name from the singular root to the checked-in plural Interop root.
+
+    An owned counterpart has no Interop type of its own — it is the same native type reached
+    through an owning factory — so the `Owned` prefix is dropped before the lookup.
+    """
     surface_name = surface.capitalize() if surface != "levilamina" else "LeviLamina"
     singular = f"Hosihikari.Binding.{surface_name}."
     plural = f"Hosihikari.Bindings.{surface_name}.Interop."
-    return name.replace(singular, plural, 1) if name.startswith(singular) else name
+    if not name.startswith(singular):
+        return name
+
+    tail = name[len(singular):]
+    head, _, last = tail.rpartition(".")
+    if last.startswith("Owned"):
+        last = last[len("Owned"):]
+    return f"{plural}{head}.{last}" if head else plural + last
 
 
 def declared_types(generated: Path) -> set[str]:

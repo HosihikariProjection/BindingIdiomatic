@@ -2,14 +2,11 @@ namespace Hosihikari.Binding.Endstone;
 
 /// <summary>A player connected to the server.</summary>
 /// <remarks>
-/// Players are reached by borrowing, never created directly, so an instance obtained from an
-/// event or <c>Server</c> lookup is only valid while the server keeps the player alive.
-/// The type still implements <see cref="IDisposable"/> because <see cref="From"/> can absorb an
-/// owned wrapper; disposing a borrowed instance only invalidates that instance.
+/// Players are only ever reached by borrowing: the shim generates no disposer for a host-owned
+/// Endstone object, so there is no owned counterpart and no <see cref="IDisposable"/> here.
+/// The instance stays valid while the server keeps the player alive.
 /// </remarks>
-public sealed class Player :
-    IOwnedHandle,
-    IInteropBridge<InteropPlayer>
+public sealed class Player : IInteropBridge<InteropPlayer>
 {
     private InteropPlayer? _interop;
 
@@ -18,7 +15,6 @@ public sealed class Player :
     /// <summary>Bridges an Interop wrapper, reusing the instance already registered for the target.</summary>
     /// <param name="interop">The wrapper to bridge.</param>
     /// <param name="scope">The scope owning the identity registry.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="interop"/> or <paramref name="scope"/> is null.</exception>
     public static Player From(InteropPlayer interop, BindingScope scope)
     {
         ArgumentNullException.ThrowIfNull(interop);
@@ -39,15 +35,10 @@ public sealed class Player :
     }
 
     /// <inheritdoc/>
-    public InteropPlayer Interop =>
-        _interop ?? throw new ObjectDisposedException(nameof(Player));
+    public InteropPlayer Interop => _interop ?? throw new ObjectDisposedException(nameof(Player));
 
-    /// <inheritdoc/>
+    /// <summary>The native handle, or zero once the instance was invalidated.</summary>
     public nint Handle => _interop?.Handle ?? 0;
-
-    /// <inheritdoc/>
-    /// <remarks>Always <see langword="false"/> unless an owned wrapper was absorbed.</remarks>
-    public bool OwnsHandle => _interop?.OwnsHandle ?? false;
 
     /// <summary>The player's name.</summary>
     public string Name => Interop.getName();
@@ -122,19 +113,15 @@ public sealed class Player :
     public void CloseForm() => Interop.closeForm();
 
     /// <summary>Gives the player experience.</summary>
-    /// <param name="amount">The amount to give.</param>
     public void GiveExperience(int amount) => Interop.giveExp(amount);
 
     /// <summary>Gives the player experience levels.</summary>
-    /// <param name="amount">The number of levels to give.</param>
     public void GiveExperienceLevels(int amount) => Interop.giveExpLevels(amount);
 
     /// <summary>Kicks the player with a message.</summary>
-    /// <param name="message">The message shown to the player.</param>
     public void Kick(string message) => Interop.kick(message);
 
     /// <summary>Runs a command as the player.</summary>
-    /// <param name="command">The command line.</param>
     /// <returns>Whether the command succeeded.</returns>
     public bool PerformCommand(string command) => Interop.performCommand(command);
 
@@ -170,56 +157,14 @@ public sealed class Player :
     /// <summary>Sends a toast to the player.</summary>
     public void SendToast(string title, string content) => Interop.sendToast(title, content);
 
-    /// <inheritdoc/>
-    /// <exception cref="InvalidOperationException">The instance only borrows its handle.</exception>
-    public nint ReleaseHandle()
-    {
-        var handle = Interop.ReleaseHandle();
-        _interop = null;
-        return handle;
-    }
-
-    /// <inheritdoc/>
-    /// <remarks>
-    /// Host-owned Endstone objects get no disposer from the shim, so disposing a borrowed
-    /// instance only invalidates it. An absorbed owned wrapper is released.
-    /// </remarks>
-    public void Dispose()
-    {
-        var interop = _interop;
-        if (interop is null)
-        {
-            return;
-        }
-
-        _interop = null;
-        if (interop.OwnsHandle)
-        {
-            interop.ReleaseHandle();
-        }
-        else
-        {
-            interop.DisposeIfDisposable();
-        }
-    }
+    /// <summary>Invalidates this instance. The native player is untouched.</summary>
+    public void Dispose() => _interop = null;
 
     private void Absorb(InteropPlayer incoming)
     {
-        if (ReferenceEquals(incoming, _interop))
+        if (!ReferenceEquals(incoming, _interop))
         {
-            return;
-        }
-
-        // Only an owned incoming handle is worth transferring; a borrowed one is just dropped.
-        if (incoming.OwnsHandle)
-        {
-            var transferred = incoming.ReleaseHandle();
-            _interop?.DisposeIfDisposable();
-            _interop = new InteropPlayer(transferred);
-        }
-        else
-        {
-            incoming.DisposeIfDisposable();
+            _interop = incoming;
         }
     }
 }

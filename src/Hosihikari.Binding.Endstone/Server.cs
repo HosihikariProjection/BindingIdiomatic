@@ -3,12 +3,10 @@ namespace Hosihikari.Binding.Endstone;
 /// <summary>The running server.</summary>
 /// <remarks>
 /// The shim generates no disposer for a host-owned Endstone object, and <c>Server.Create</c> is a
-/// stub, so an instance is always borrowed and the host decides its lifetime. The type still
-/// implements <see cref="IDisposable"/> so an owned wrapper can be absorbed.
+/// stub, so an instance is always borrowed and the host decides its lifetime. There is no owned
+/// counterpart, hence no <see cref="IDisposable"/>.
 /// </remarks>
-public sealed class Server :
-    IOwnedHandle,
-    IInteropBridge<InteropServer>
+public sealed class Server : IInteropBridge<InteropServer>
 {
     private InteropServer? _interop;
 
@@ -39,12 +37,10 @@ public sealed class Server :
     /// <inheritdoc/>
     public InteropServer Interop => _interop ?? throw new ObjectDisposedException(nameof(Server));
 
-    /// <inheritdoc/>
+    /// <summary>The native handle, or zero once the instance was invalidated.</summary>
     public nint Handle => _interop?.Handle ?? 0;
 
     /// <inheritdoc/>
-    public bool OwnsHandle => _interop?.OwnsHandle ?? false;
-
     /// <summary>The server name.</summary>
     public string Name => Interop.getName();
 
@@ -192,33 +188,8 @@ public sealed class Server :
     /// <summary>Shuts the server down.</summary>
     public void Shutdown() => Interop.shutdown();
 
-    /// <inheritdoc/>
-    public nint ReleaseHandle()
-    {
-        var handle = Interop.ReleaseHandle();
-        _interop = null;
-        return handle;
-    }
-
-    /// <inheritdoc/>
-    public void Dispose()
-    {
-        var interop = _interop;
-        if (interop is null)
-        {
-            return;
-        }
-
-        _interop = null;
-        if (interop.OwnsHandle)
-        {
-            interop.ReleaseHandle();
-        }
-        else
-        {
-            interop.DisposeIfDisposable();
-        }
-    }
+    /// <summary>Invalidates this instance. The native server is untouched.</summary>
+    public void Dispose() => _interop = null;
 
     private void Absorb(InteropServer incoming)
     {
@@ -227,15 +198,9 @@ public sealed class Server :
             return;
         }
 
-        if (incoming.OwnsHandle)
+        if (!ReferenceEquals(incoming, _interop))
         {
-            var transferred = incoming.ReleaseHandle();
-            _interop?.DisposeIfDisposable();
-            _interop = new InteropServer(transferred);
-        }
-        else
-        {
-            incoming.DisposeIfDisposable();
+            _interop = incoming;
         }
     }
 }
