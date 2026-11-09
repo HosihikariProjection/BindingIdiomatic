@@ -66,13 +66,13 @@ def declared_types(generated: Path) -> set[str]:
     return found
 
 
-def check_surface(root: Path, surface: str) -> list[str]:
+def check_surface(root: Path, siblings: Path, surface: str) -> list[str]:
     repo, plural_root = INTEROP_ROOTS[surface]
     manifest = root / "docs" / f"idiomatic-{surface}.tsv"
     if not manifest.exists():
         return [f"{manifest.name}: missing"]
 
-    generated = root.parent / repo / "src" / f"{plural_root}" / "Generated"
+    generated = siblings / repo / "src" / f"{plural_root}" / "Generated"
     if not generated.is_dir():
         return [f"{manifest.name}: interop tree not found at {generated}"]
 
@@ -105,9 +105,12 @@ def check_surface(root: Path, surface: str) -> list[str]:
 
 def main(argv: list[str]) -> int:
     root = Path(argv[1]).resolve() if len(argv) > 1 else Path(__file__).resolve().parent.parent
+    # The sibling checkouts sit next to the repository here, but the workflow checks
+    # them out one level above it; --siblings names that directory explicitly.
+    siblings = Path(argv[2]).resolve() if len(argv) > 2 else root.parent
     problems: list[str] = []
     for surface in INTEROP_ROOTS:
-        problems.extend(check_surface(root, surface))
+        problems.extend(check_surface(root, siblings, surface))
 
     for problem in problems:
         print(problem)
