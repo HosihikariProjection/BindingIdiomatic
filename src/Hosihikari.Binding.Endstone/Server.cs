@@ -159,7 +159,8 @@ public sealed class Server : IInteropBridge<InteropServer>
     {
         get
         {
-            var wrapper = Interop.getPlayer(id);
+            ArgumentNullException.ThrowIfNull(id);
+            var wrapper = Interop.getPlayer(id.Interop);
             return wrapper is null ? null : Player.From(wrapper, BindingScope.For(typeof(Server).Assembly));
         }
     }
