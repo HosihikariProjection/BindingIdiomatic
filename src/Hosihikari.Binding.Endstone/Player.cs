@@ -1,6 +1,3 @@
-using InteropPlayer = Hosihikari.Bindings.Endstone.Interop.endstone.Player;
-using Hosihikari.Bindings.Endstone.Interop.endstone;
-
 namespace Hosihikari.Binding.Endstone;
 
 /// <summary>A player connected to the server.</summary>
