@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>Hosihikari.Binding.Endstone</RootNamespace>
+    <AssemblyName>Hosihikari.Binding.Endstone</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Hosihikari.Binding.Endstone</PackageId>
+    <Version>0.11.15-r0</Version>
+    <Authors>Hosihikari</Authors>
+    <Description>Hand-written .NET Idiomatic layer over the Endstone Interop surface.</Description>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/HosihikariProjection/BindingIdiomatic</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>minecraft;bedrock;bds;endstone;hosihikari;idiomatic</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Hosihikari.Binding/Hosihikari.Binding.csproj" />
+    <ProjectReference Include="$(EndstoneInteropProjectPath)" Condition="'$(EndstoneInteropProjectPath)' != ''" />
+    <ProjectReference Include="../../../Binding.Endstone/src/Hosihikari.Bindings.Endstone.Interop/Hosihikari.Bindings.Endstone.Interop.csproj" Condition="'$(EndstoneInteropProjectPath)' == ''" />
+  </ItemGroup>
+
+</Project>

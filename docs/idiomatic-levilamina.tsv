@@ -1,0 +1,4 @@
+类型全名	形态	保留为方法的成员及原因
+Hosihikari.Binding.LeviLamina.ll.service.Functions	属性	全部 get* 自由函数折成静态属性；getLevel/getServerInstance 当前返回 nint?，依赖类型补包装后修正
+Hosihikari.Binding.LeviLamina.ll.command.CommandRegistrar	属性; 方法; 索引器	getInstance/getServerInstance 静态属性化；has* 折成属性，add*/remove*/set*/try* 前缀折成方法（带副作用）；compileCommand/executeCommand 的参数仍是 nint，保留方法并留 nint 逃生
+Hosihikari.Binding.LeviLamina.ll.@event.EventBus	属性; 索引器; 方法	getListenerCount 折成属性，hasEvent/hasListener 折成属性；getListener 折成索引器；addListener/removeListener/publish 保留方法（有副作用的多步操作）
