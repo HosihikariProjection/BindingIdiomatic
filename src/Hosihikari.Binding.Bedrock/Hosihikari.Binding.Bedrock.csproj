@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>Hosihikari.Binding.Bedrock</RootNamespace>
+    <AssemblyName>Hosihikari.Binding.Bedrock</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- A generated member marked [Obsolete] is a stub. Wrapping one would put a
+         NotSupportedException behind an idiomatic signature, so it is an error here. -->
+    <WarningsAsErrors>$(WarningsAsErrors);CS0618</WarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Hosihikari.Binding.Bedrock</PackageId>
+    <Version>1.26.60-r0</Version>
+    <Authors>Hosihikari</Authors>
+    <Description>Hand-written .NET Idiomatic layer over the Bedrock Interop surface.</Description>
+    <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/HosihikariProjection/BindingIdiomatic</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>minecraft;bedrock;bds;hosihikari;idiomatic</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Hosihikari.Binding/Hosihikari.Binding.csproj" />
+    <ProjectReference Include="$(BedrockInteropProjectPath)"
+                      Condition="'$(BedrockInteropProjectPath)' != ''"
+                      Version="[1.26.60-r0]" />
+    <ProjectReference Include="../../../Binding.Bedrock/src/Hosihikari.Bindings.Bedrock.Interop/Hosihikari.Bindings.Bedrock.Interop.csproj"
+                      Condition="'$(BedrockInteropProjectPath)' == ''"
+                      Version="[1.26.60-r0]" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>

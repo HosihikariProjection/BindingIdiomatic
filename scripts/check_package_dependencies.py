@@ -20,6 +20,7 @@ from pathlib import Path
 # surfaces were built against for the same reason the pairs are pinned to each other.
 PAIRS = {
     "Hosihikari.Binding": "Hosihikari.Bindings.Abi",
+    "Hosihikari.Binding.Bedrock": "Hosihikari.Bindings.Bedrock.Interop",
     "Hosihikari.Binding.Endstone": "Hosihikari.Bindings.Endstone.Interop",
     "Hosihikari.Binding.LeviLamina": "Hosihikari.Bindings.LeviLamina.Interop",
 }

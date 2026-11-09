@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Hosihikari.Binding/Hosihikari.Binding.csproj" />
+    <Project Path="src/Hosihikari.Binding.Bedrock/Hosihikari.Binding.Bedrock.csproj" />
     <Project Path="src/Hosihikari.Binding.Endstone/Hosihikari.Binding.Endstone.csproj" />
     <Project Path="src/Hosihikari.Binding.LeviLamina/Hosihikari.Binding.LeviLamina.csproj" />
   </Folder>

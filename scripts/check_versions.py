@@ -15,6 +15,7 @@ from pathlib import Path
 VERSION = re.compile(r"<Version>([^<]+)</Version>")
 
 PAIRS = {
+    "bedrock": ("Binding.Bedrock", "Hosihikari.Binding.Bedrock", "Hosihikari.Bindings.Bedrock.Interop"),
     "endstone": ("Binding.Endstone", "Hosihikari.Binding.Endstone", "Hosihikari.Bindings.Endstone.Interop"),
     "levilamina": ("Binding.LeviLamina", "Hosihikari.Binding.LeviLamina", "Hosihikari.Bindings.LeviLamina.Interop"),
 }

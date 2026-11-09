@@ -34,7 +34,7 @@ def to_interop_name(name: str, surface: str) -> str:
     An owned counterpart has no Interop type of its own — it is the same native type reached
     through an owning factory — so the `Owned` prefix is dropped before the lookup.
     """
-    surface_name = surface.capitalize() if surface != "levilamina" else "LeviLamina"
+    surface_name = {"levilamina": "LeviLamina", "endstone": "Endstone", "bedrock": "Bedrock"}[surface]
     singular = f"Hosihikari.Binding.{surface_name}."
     plural = f"Hosihikari.Bindings.{surface_name}.Interop."
     if not name.startswith(singular):
@@ -91,7 +91,10 @@ def check_surface(root: Path, siblings: Path, surface: str) -> list[str]:
         name, forms, kept = (cell.strip() for cell in cells)
         mapped = to_interop_name(name, surface)
         if mapped not in known:
-            problems.append(f"{manifest.name}:{number}: no such Interop type: {mapped}")
+            # A generated name keeps its own casing (AABB); the layer spells it C#-style.
+            folded = next((item for item in known if item.lower() == mapped.lower()), None)
+            if folded is None:
+                problems.append(f"{manifest.name}:{number}: no such Interop type: {mapped}")
 
         unknown = [form for form in (part.strip() for part in forms.split(";")) if form and form not in FORMS]
         if unknown:

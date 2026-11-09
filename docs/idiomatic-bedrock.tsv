@@ -1,1 +1,7 @@
 类型全名	形态	保留为方法的成员及原因
+Hosihikari.Binding.Bedrock.Vec3	属性	借用版；无工厂，只能借用到达；x/y/z 折成属性；toString 留在 Interop，运算符该面尚未投影
+Hosihikari.Binding.Bedrock.BlockPos	属性; 方法	借用版；east/north/west/south 是 MCNAPI 未导出的 stub，不包装；x/y/z 属性；Center/BottomCenter 返回 Vec3 包装
+Hosihikari.Binding.Bedrock.ChunkPos	属性; 运算符	借用版；x/z 属性；CopyOf 转拥有版；==/!= 按分量
+Hosihikari.Binding.Bedrock.OwnedChunkPos	属性; 构造函数	拥有版；两个 Create 走构造函数；Dispose 销毁原生对象
+Hosihikari.Binding.Bedrock.AABB	属性; 方法	借用版；Center 属性；Contains/Intersects/DistanceTo 保留方法（多步判定）
+Hosihikari.Binding.Bedrock.OwnedAabb	属性; 方法; 构造函数	拥有版；Create 走构造函数；Grow/Shrink/Merge 返回新的借用盒

@@ -31,6 +31,15 @@ jobs:
           repository: HosihikariProjection/LeviLaminaBinding
           path: Binding.LeviLamina
 
+      - name: Bedrock Interop
+        uses: actions/checkout@v4
+        with:
+          repository: HosihikariProjection/BedrockBinding
+          path: Binding.Bedrock
+          # Must match the Bedrock surface version in the Bedrock package; the
+          # default branch there is the frozen v1.21.3, not the current one.
+          ref: v1.26.60
+
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
@@ -62,6 +71,7 @@ jobs:
           -p:AbiProjectPath=${{ github.workspace }}/Binding.Abi/src/Hosihikari.Bindings.Abi/Hosihikari.Bindings.Abi.csproj
           -p:EndstoneInteropProjectPath=${{ github.workspace }}/Binding.Endstone/src/Hosihikari.Bindings.Endstone.Interop/Hosihikari.Bindings.Endstone.Interop.csproj
           -p:LeviLaminaInteropProjectPath=${{ github.workspace }}/Binding.LeviLamina/src/Hosihikari.Bindings.LeviLamina.Interop/Hosihikari.Bindings.LeviLamina.Interop.csproj
+          -p:BedrockInteropProjectPath=${{ github.workspace }}/Binding.Bedrock/src/Hosihikari.Bindings.Bedrock.Interop/Hosihikari.Bindings.Bedrock.Interop.csproj
 
       # A nested project reference carries no version into the nuspec, so the packed
       # dependency comes out as a bare minimum; ADR-0027 wants the exact pair.
