@@ -25,7 +25,7 @@ public sealed class BindingScope : IDisposable
     private bool _disposed;
 
     /// <summary>The registry this scope owns, or <see langword="null"/> when identity is not tracked.</summary>
-    public IdentityRegistry<object>? Identities { get; init; }
+    public IdentityRegistry? Identities { get; init; }
 
     /// <summary>The generation source used to validate identity entries.</summary>
     public IGenerationSource? Generations { get; init; }

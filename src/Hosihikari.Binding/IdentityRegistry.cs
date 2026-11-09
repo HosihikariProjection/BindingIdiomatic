@@ -12,13 +12,13 @@ namespace Hosihikari.Binding;
 /// entry instead of handing out an instance that already aliases a dead object.
 /// The registry never keeps a managed instance alive on its own.
 /// </remarks>
-public sealed class IdentityRegistry<T> where T : class
+public sealed class IdentityRegistry
 {
-    private readonly Dictionary<(nint Target, int Generation), WeakReference<T>> _entries = new();
+    private readonly Dictionary<(nint Target, int Generation), WeakReference> _entries = new();
     private readonly Lock _gate = new();
 
     /// <summary>Returns the registered instance for the target, or <see langword="null"/>.</summary>
-    public T? TryGet(nint target, int generation)
+    public T? TryGet<T>(nint target, int generation) where T : class
     {
         if (target == 0)
         {
@@ -33,7 +33,7 @@ public sealed class IdentityRegistry<T> where T : class
                 return null;
             }
 
-            if (weak.TryGetTarget(out var instance))
+            if (weak.Target is T instance)
             {
                 return instance;
             }
@@ -46,7 +46,7 @@ public sealed class IdentityRegistry<T> where T : class
     /// <summary>
     /// Returns the registered instance, or registers and returns <paramref name="factory"/>'s result.
     /// </summary>
-    public T GetOrAdd(nint target, int generation, Func<T> factory)
+    public T GetOrAdd<T>(nint target, int generation, Func<T> factory) where T : class
     {
         ArgumentNullException.ThrowIfNull(factory);
 
@@ -57,14 +57,14 @@ public sealed class IdentityRegistry<T> where T : class
 
         lock (_gate)
         {
-            if (_entries.TryGetValue((target, generation), out var weak) && weak.TryGetTarget(out var existing))
+            if (_entries.TryGetValue((target, generation), out var weak) && weak.Target is T existing)
             {
                 return existing;
             }
 
             Prune(target, generation);
             var created = factory();
-            _entries[(target, generation)] = new WeakReference<T>(created);
+            _entries[(target, generation)] = new WeakReference(created);
             return created;
         }
     }
