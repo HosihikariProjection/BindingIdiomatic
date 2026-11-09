@@ -70,17 +70,6 @@ public sealed class CommandRegistrar : IInteropBridge<InteropCommandRegistrar>
     /// <summary>Replaces the values of a soft enum.</summary>
     public bool SetSoftEnumValues(string name, string[] values) => Interop.setSoftEnumValues(name, values);
 
-    /// <summary>Removes every registration.</summary>
-    public void Clear() => Interop.clear();
-
-    /// <summary>Compiles a command string. Arguments and result stay raw handles.</summary>
-    public nint CompileCommand(nint commandStr, nint origin, nint version) =>
-        Interop.compileCommand(commandStr, origin, version);
-
-    /// <summary>Executes a compiled command. Arguments and result stay raw handles.</summary>
-    public nint ExecuteCommand(nint commandStr, nint origin, nint outputType, nint version) =>
-        Interop.executeCommand(commandStr, origin, outputType, version);
-
     /// <summary>Creates or fetches a command by name.</summary>
     public Hosihikari.Bindings.LeviLamina.Interop.ll.command.CommandHandle GetOrCreateCommand(
         string name,

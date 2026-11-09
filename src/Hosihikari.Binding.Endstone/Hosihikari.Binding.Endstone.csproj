@@ -9,6 +9,9 @@
     <AssemblyName>Hosihikari.Binding.Endstone</AssemblyName>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!-- A generated member marked [Obsolete] is a stub. Wrapping one would put a
+         NotSupportedException behind an idiomatic signature, so it is an error here. -->
+    <WarningsAsErrors>$(WarningsAsErrors);CS0618</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>

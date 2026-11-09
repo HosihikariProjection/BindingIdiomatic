@@ -2,8 +2,9 @@ namespace Hosihikari.Binding.Endstone;
 
 /// <summary>A borrowed command map.</summary>
 /// <remarks>
-/// The borrowed half: maps handed out by the server are borrowed. To make one, use
-/// <see cref="OwnedCommandMap"/>. Lookups are raw shared handles until command wrappers exist.
+/// Borrowed only: <c>Create</c> is a stub on this surface (the class has no accessible
+/// destructor), so no owned counterpart exists. Lookups are raw shared handles until command
+/// wrappers exist.
 /// </remarks>
 public sealed class CommandMap : IInteropBridge<InteropCommandMap>
 {

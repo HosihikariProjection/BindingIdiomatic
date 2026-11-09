@@ -92,27 +92,28 @@ public sealed class Server : IInteropBridge<InteropServer>
     /// <summary>Current tick usage.</summary>
     public float CurrentTickUsage => Interop.getCurrentTickUsage();
 
-    /// <summary>The connected players.</summary>
+    /// <summary>The connected players, registered on the caller's scope.</summary>
     /// <remarks>Rebuilt per read; the elements are borrowed views, not copies.</remarks>
-    public IReadOnlyList<Player> OnlinePlayers
+    public IReadOnlyList<Player> OnlinePlayers => GetOnlinePlayers(null);
+
+    /// <summary>The connected players, registered on an explicit scope.</summary>
+    /// <param name="scope">The scope that owns the returned identities.</param>
+    public IReadOnlyList<Player> GetOnlinePlayers(BindingScope? scope)
     {
-        get
+        var handles = Interop.getOnlinePlayers();
+        if (handles.Length == 0)
         {
-            var handles = Interop.getOnlinePlayers();
-            if (handles.Length == 0)
-            {
-                return Array.Empty<Player>();
-            }
-
-            var scope = CallerScope();
-            var players = new Player[handles.Length];
-            for (var index = 0; index < handles.Length; index++)
-            {
-                players[index] = Player.From(InteropPlayer.Borrow(handles[index]), scope);
-            }
-
-            return players;
+            return Array.Empty<Player>();
         }
+
+        var owner = scope ?? CallerScope();
+        var players = new Player[handles.Length];
+        for (var index = 0; index < handles.Length; index++)
+        {
+            players[index] = Player.From(InteropPlayer.Borrow(handles[index]), owner);
+        }
+
+        return players;
     }
 
     /// <summary>The ban list.</summary>
@@ -145,27 +146,32 @@ public sealed class Server : IInteropBridge<InteropServer>
     /// <summary>The service manager.</summary>
     public ServiceManager ServiceManager => Interop.getServiceManager();
 
-    /// <summary>Looks a player up by name.</summary>
+    /// <summary>Looks a player up by name, registered on the caller's scope.</summary>
     /// <param name="name">The player's name.</param>
-    public Player? this[string name]
+    public Player? this[string name] => GetPlayer(name, null);
+
+    /// <summary>Looks a player up by UUID, registered on the caller's scope.</summary>
+    /// <param name="id">The player's UUID.</param>
+    public Player? this[UUID id] => GetPlayer(id, null);
+
+    /// <summary>Looks a player up by name on an explicit scope.</summary>
+    /// <param name="name">The player's name.</param>
+    /// <param name="scope">The scope that owns the returned identity.</param>
+    public Player? GetPlayer(string name, BindingScope? scope)
     {
-        get
-        {
-            var wrapper = Interop.getPlayer(name);
-            return wrapper is null ? null : Player.From(wrapper, CallerScope());
-        }
+        ArgumentNullException.ThrowIfNull(name);
+        var wrapper = Interop.getPlayer(name);
+        return wrapper is null ? null : Player.From(wrapper, scope ?? CallerScope());
     }
 
-    /// <summary>Looks a player up by UUID.</summary>
+    /// <summary>Looks a player up by UUID on an explicit scope.</summary>
     /// <param name="id">The player's UUID.</param>
-    public Player? this[UUID id]
+    /// <param name="scope">The scope that owns the returned identity.</param>
+    public Player? GetPlayer(UUID id, BindingScope? scope)
     {
-        get
-        {
-            ArgumentNullException.ThrowIfNull(id);
-            var wrapper = Interop.getPlayer(id.Interop);
-            return wrapper is null ? null : Player.From(wrapper, CallerScope());
-        }
+        ArgumentNullException.ThrowIfNull(id);
+        var wrapper = Interop.getPlayer(id.Interop);
+        return wrapper is null ? null : Player.From(wrapper, scope ?? CallerScope());
     }
 
     /// <summary>
