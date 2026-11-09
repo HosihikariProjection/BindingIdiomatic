@@ -4,4 +4,7 @@
     <Project Path="src/Hosihikari.Binding.Endstone/Hosihikari.Binding.Endstone.csproj" />
     <Project Path="src/Hosihikari.Binding.LeviLamina/Hosihikari.Binding.LeviLamina.csproj" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Hosihikari.Binding.Tests/Hosihikari.Binding.Tests.csproj" />
+  </Folder>
 </Solution>
