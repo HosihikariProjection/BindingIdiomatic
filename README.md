@@ -31,4 +31,7 @@ Nothing switches threads for you. Game object affinity is documented on each mem
 
 The shared base, the Endstone player/server/item/level types and the LeviLamina service, command and event entry points are in. Bedrock has an empty manifest.
 
-`scripts/run-runtime-smoke.ps1 -ServerRoot <bds>` loads the layer inside a real BDS process and checks the bridge, identity reuse, scope reclaim and handler isolation.
+Two runtime smokes load the layer inside a real server:
+
+- `scripts/run-runtime-smoke.ps1 -ServerRoot <bds>` — LeviLamina carrier.
+- `scripts/run-runtime-smoke-endstone.ps1 -ServerRoot <endstone bds>` — Endstone carrier. The root must have the framework's Endstone host deployed (`HostingShim/carriers/endstone/deploy.bat`) and the `endstone` CLI available through the venv named by `-Python`.
