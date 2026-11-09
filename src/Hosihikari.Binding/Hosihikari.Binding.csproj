@@ -19,12 +19,17 @@
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/HosihikariProjection/BindingIdiomatic</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>minecraft;bedrock;bds;hosihikari;idiomatic</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="$(AbiProjectPath)" Condition="'$(AbiProjectPath)' != ''" />
     <ProjectReference Include="../../../Binding.Abi/src/Hosihikari.Bindings.Abi/Hosihikari.Bindings.Abi.csproj" Condition="'$(AbiProjectPath)' == ''" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
 </Project>

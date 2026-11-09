@@ -22,13 +22,24 @@
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/HosihikariProjection/BindingIdiomatic</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>minecraft;bedrock;bds;endstone;hosihikari;idiomatic</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../Hosihikari.Binding/Hosihikari.Binding.csproj" />
-    <ProjectReference Include="$(EndstoneInteropProjectPath)" Condition="'$(EndstoneInteropProjectPath)' != ''" />
-    <ProjectReference Include="../../../Binding.Endstone/src/Hosihikari.Bindings.Endstone.Interop/Hosihikari.Bindings.Endstone.Interop.csproj" Condition="'$(EndstoneInteropProjectPath)' == ''" />
+    <!-- ADR-0027: the pair is released together, so the packed dependency is an exact
+         range on the Interop this package was built against. -->
+    <ProjectReference Include="$(EndstoneInteropProjectPath)"
+                      Condition="'$(EndstoneInteropProjectPath)' != ''"
+                      Version="[0.11.15-r0]" />
+    <ProjectReference Include="../../../Binding.Endstone/src/Hosihikari.Bindings.Endstone.Interop/Hosihikari.Bindings.Endstone.Interop.csproj"
+                      Condition="'$(EndstoneInteropProjectPath)' == ''"
+                      Version="[0.11.15-r0]" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
 </Project>

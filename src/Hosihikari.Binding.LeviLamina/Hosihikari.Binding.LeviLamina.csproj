@@ -22,13 +22,24 @@
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/HosihikariProjection/BindingIdiomatic</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>minecraft;bedrock;bds;levilamina;hosihikari;idiomatic</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../Hosihikari.Binding/Hosihikari.Binding.csproj" />
-    <ProjectReference Include="$(LeviLaminaInteropProjectPath)" Condition="'$(LeviLaminaInteropProjectPath)' != ''" />
-    <ProjectReference Include="../../../Binding.LeviLamina/src/Hosihikari.Bindings.LeviLamina.Interop/Hosihikari.Bindings.LeviLamina.Interop.csproj" Condition="'$(LeviLaminaInteropProjectPath)' == ''" />
+    <!-- ADR-0027: the pair is released together, so the packed dependency is an exact
+         range on the Interop this package was built against. -->
+    <ProjectReference Include="$(LeviLaminaInteropProjectPath)"
+                      Condition="'$(LeviLaminaInteropProjectPath)' != ''"
+                      Version="[26.60.2-r0]" />
+    <ProjectReference Include="../../../Binding.LeviLamina/src/Hosihikari.Bindings.LeviLamina.Interop/Hosihikari.Bindings.LeviLamina.Interop.csproj"
+                      Condition="'$(LeviLaminaInteropProjectPath)' == ''"
+                      Version="[26.60.2-r0]" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,82 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: ABI contract
+        uses: actions/checkout@v4
+        with:
+          repository: HosihikariProjection/BindingAbi
+          path: Binding.Abi
+
+      - name: Endstone Interop
+        uses: actions/checkout@v4
+        with:
+          repository: HosihikariProjection/EndstoneBinding
+          path: Binding.Endstone
+
+      - name: LeviLamina Interop
+        uses: actions/checkout@v4
+        with:
+          repository: HosihikariProjection/LeviLaminaBinding
+          path: Binding.LeviLamina
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # A tag only means something if it agrees with the pair it was cut against,
+      # so the tag must spell the version and both sides must carry it.
+      - name: Versions agree with the pair and the tag
+        run: |
+          python3 scripts/check_versions.py . ${{ github.workspace }}
+          tag_version="${GITHUB_REF_NAME#v}"
+          for project in src/*/*.csproj; do
+            case "$project" in
+              */Hosihikari.Binding/*|*/Hosihikari.Binding.csproj) continue ;;
+            esac
+            grep -q "<Version>$tag_version</Version>" "$project"               || { echo "$project is not at $tag_version"; exit 1; }
+          done
+
+      - name: Manifests resolve
+        run: python3 scripts/verify_manifests.py . ${{ github.workspace }}
+
+      - name: Test
+        run: >
+          dotnet run --project tests/Hosihikari.Binding.Tests/Hosihikari.Binding.Tests.csproj -c Release
+          -p:AbiProjectPath=${{ github.workspace }}/Binding.Abi/src/Hosihikari.Bindings.Abi/Hosihikari.Bindings.Abi.csproj
+
+      - name: Pack
+        run: >
+          dotnet pack Hosihikari.Binding.slnx -c Release -o artifacts/package
+          -p:AbiProjectPath=${{ github.workspace }}/Binding.Abi/src/Hosihikari.Bindings.Abi/Hosihikari.Bindings.Abi.csproj
+          -p:EndstoneInteropProjectPath=${{ github.workspace }}/Binding.Endstone/src/Hosihikari.Bindings.Endstone.Interop/Hosihikari.Bindings.Endstone.Interop.csproj
+          -p:LeviLaminaInteropProjectPath=${{ github.workspace }}/Binding.LeviLamina/src/Hosihikari.Bindings.LeviLamina.Interop/Hosihikari.Bindings.LeviLamina.Interop.csproj
+
+      # A nested project reference carries no version into the nuspec, so the packed
+      # dependency comes out as a bare minimum; ADR-0027 wants the exact pair.
+      - name: Pin the pair to an exact range
+        run: python3 scripts/check_package_dependencies.py artifacts/package
+
+      - name: Push packages
+        run: >
+          dotnet nuget push "artifacts/package/*.nupkg"
+          --api-key ${{ secrets.GITHUB_TOKEN }}
+          --source https://nuget.pkg.github.com/HosihikariProjection/index.json
+          --skip-duplicate
+
+      - name: Attach packages to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/package/*.nupkg
+          generate_release_notes: true
