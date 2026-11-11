@@ -8,10 +8,15 @@ namespace Hosihikari.Binding.Bedrock;
 internal static class Snapshots
 {
     /// <summary>Copies a borrowed box into a fresh owned one.</summary>
-    public static InteropAabbB Rebuild(InteropAabbB source)
+    public static InteropAabbB? Rebuild(InteropAabbB source)
     {
         var empty = InteropAabbB.BOX_AT_ORIGIN_WITH_NO_VOLUME();
-        empty.operator_assign(source);
-        return empty;
+        if (empty is null)
+        {
+            return null;
+        }
+
+        // Assignment returns the target; the wrapper it hands back is a fresh, owned one.
+        return empty.operator_assign(source);
     }
 }

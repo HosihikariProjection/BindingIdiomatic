@@ -24,7 +24,7 @@ public sealed class OwnedAabb :
     public static OwnedAabb CopyOf(AABB other)
     {
         ArgumentNullException.ThrowIfNull(other);
-        return new OwnedAabb(Snapshots.Rebuild(other.Interop));
+        return new OwnedAabb(Factories.Require(Snapshots.Rebuild(other.Interop), "a copied bounding box"));
     }
 
     /// <inheritdoc/>
@@ -33,23 +33,34 @@ public sealed class OwnedAabb :
     /// <summary>The native handle, or zero once disposed.</summary>
     public nint Handle => _interop?.Handle ?? 0;
 
-    /// <summary>The box centre.</summary>
-    public Vec3 Center => Vec3.From(Interop.center());
+    /// <summary>The box centre, or <see langword="null"/> when the carrier does not export it.</summary>
+    public Vec3? Center => Interop.center() is { } value ? Vec3.From(value) : null;
 
-    /// <summary>Grows the box by a distance and returns the result.</summary>
-    public AABB Grow(Vec3 distance) => AABB.From(Interop.cloneAndGrow(distance.Interop));
+    /// <summary>Grows the box by a distance and returns the new box, which the shim allocates.</summary>
+    public AABB? Grow(Vec3 distance)
+    {
+        ArgumentNullException.ThrowIfNull(distance);
+        var value = Interop.cloneAndGrow(distance.Interop);
+        return value is null ? null : AABB.From(value);
+    }
 
-    /// <summary>Grows the box by a radius and returns the result.</summary>
-    public AABB Grow(float radius) => AABB.From(Interop.cloneAndGrow(radius));
+    /// <summary>Grows the box by a radius and returns the new box, which the shim allocates.</summary>
+    public AABB? Grow(float radius)
+    {
+        var value = Interop.cloneAndGrow(radius);
+        return value is null ? null : AABB.From(value);
+    }
 
     /// <summary>Shrinks the box by an offset and returns the result.</summary>
-    public AABB Shrink(Vec3 offset) => AABB.From(Interop.shrink(offset.Interop));
+    public AABB? Shrink(Vec3 offset) => Wrap(Interop.shrink(offset.Interop));
 
     /// <summary>Shrinks the box by a scalar and returns the result.</summary>
-    public AABB Shrink(float amount) => AABB.From(Interop.shrink(amount));
+    public AABB? Shrink(float amount) => Wrap(Interop.shrink(amount));
 
     /// <summary>Merges another box in and returns the result.</summary>
-    public AABB Merge(AABB other) => AABB.From(Interop.merge(other.Interop));
+    public AABB? Merge(AABB other) => Wrap(Interop.merge(other.Interop));
+
+    private static AABB? Wrap(InteropAabbB? value) => value is null ? null : AABB.From(value);
 
     /// <summary>Destroys the native box.</summary>
     public void Dispose()

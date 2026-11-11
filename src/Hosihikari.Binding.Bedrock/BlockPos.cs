@@ -59,18 +59,7 @@ public sealed class BlockPos : IInteropBridge<InteropBlockPos>
     /// </remarks>
     public Vec3? Center => Wrap(Interop.center());
 
-    private static Vec3? Wrap(InteropVec3 value)
-    {
-        // The generated wrapper is built unconditionally, so a failed shim call comes back as
-        // a wrapper around a null handle rather than as null. Reading through it would fault.
-        if (value.Handle == 0)
-        {
-            value.Dispose();
-            return null;
-        }
-
-        return Vec3.From(value);
-    }
+    private static Vec3? Wrap(InteropVec3? value) => value is null ? null : Vec3.From(value);
 
     /// <summary>The block position's bottom centre as a vector.</summary>
     public Vec3? BottomCenter => Wrap(Interop.bottomCenter());
@@ -79,12 +68,7 @@ public sealed class BlockPos : IInteropBridge<InteropBlockPos>
     public AABB? ToAabb()
     {
         var value = Interop.operator_AABB();
-        if (value.Handle == 0)
-        {
-            return null;
-        }
-
-        return AABB.From(value);
+        return value is null ? null : AABB.From(value);
     }
 
     /// <inheritdoc/>

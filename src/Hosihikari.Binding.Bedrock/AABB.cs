@@ -26,11 +26,8 @@ public sealed class AABB : IInteropBridge<InteropAabb>
     /// <summary>The native handle, or zero once the instance was invalidated.</summary>
     public nint Handle => _interop?.Handle ?? 0;
 
-    /// <summary>The box centre.</summary>
-    public Vec3 Center => Vec3.From(Interop.center());
-
-    /// <summary>The box's width along X.</summary>
-    public float Width => Interop.max_Address is var _ ? Interop.center().x * 2 : 0f;
+    /// <summary>The box centre, or <see langword="null"/> when the carrier does not export it.</summary>
+    public Vec3? Center => Interop.center() is { } value ? Vec3.From(value) : null;
 
     /// <summary>Whether the box contains another box.</summary>
     public bool Contains(AABB other)
