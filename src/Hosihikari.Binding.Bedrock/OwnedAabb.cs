@@ -17,7 +17,7 @@ public sealed class OwnedAabb :
     {
         ArgumentNullException.ThrowIfNull(min);
         ArgumentNullException.ThrowIfNull(max);
-        _interop = InteropAabbB.Create(min.Interop, max.Interop);
+        _interop = Factories.Require(InteropAabbB.Create(min.Interop, max.Interop), "a bounding box");
     }
 
     /// <summary>Copies a borrowed box into an owned one.</summary>
