@@ -49,7 +49,10 @@ public sealed class IdiomaticEndstoneSmokePlugin : IPlugin
             log.AppendLine($"player.missing={(server.GetPlayer("nosuchplayer", scope) is null ? "ok" : "failed")}");
 
             // Owned item stack: creation, property folding, disposal.
-            using (var type = InteropItemType.Create("minecraft", "stone"))
+            // The factory returns null once the surface maps a failed shim call to null.
+            using var type = InteropItemType.Create("minecraft", "stone");
+            log.AppendLine($"itemtype.created={(type is not null ? "ok" : "failed")}");
+            if (type is not null)
             using (var stack = new OwnedItemStack(type, 3, 0))
             {
                 log.AppendLine($"itemstack.amount={stack.Amount}");
