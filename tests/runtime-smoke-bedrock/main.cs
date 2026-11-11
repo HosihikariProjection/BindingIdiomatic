@@ -164,7 +164,7 @@ public sealed class IdiomaticBedrockSmokePlugin : IPlugin
         }
         catch (Exception exception)
         {
-            log.AppendLine($"{label}=threw {exception.GetType().Name}: {exception.Message}");
+            log.AppendLine($"  threw {exception.GetType().Name}: {exception.Message}");
         }
 
         Flush(path, log);

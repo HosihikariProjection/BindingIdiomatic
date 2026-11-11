@@ -31,14 +31,21 @@ jobs:
           repository: HosihikariProjection/LeviLaminaBinding
           path: Binding.LeviLamina
 
+      # The Bedrock repository is branched per surface version, and its default branch is the
+      # frozen v1.21.3. Derive the branch from the package version so an upgrade cannot leave
+      # this pinned to the previous surface.
+      - name: Resolve the Bedrock surface branch
+        id: bedrock-ref
+        run: |
+          version="$(awk -F'[<>]' '/<Version>/{print $3; exit}' src/Hosihikari.Binding.Bedrock/Hosihikari.Binding.Bedrock.csproj)"
+          echo "ref=v${version%%-*}" >> "$GITHUB_OUTPUT"
+
       - name: Bedrock Interop
         uses: actions/checkout@v4
         with:
           repository: HosihikariProjection/BedrockBinding
           path: Binding.Bedrock
-          # Must match the Bedrock surface version in the Bedrock package; the
-          # default branch there is the frozen v1.21.3, not the current one.
-          ref: v1.26.60
+          ref: ${{ steps.bedrock-ref.outputs.ref }}
 
       - uses: actions/setup-dotnet@v4
         with:

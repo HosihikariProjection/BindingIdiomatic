@@ -3,7 +3,10 @@ param(
     [string]$ServerRoot,
     [int]$TimeoutSeconds = 180,
     # The shim rebuild costs minutes and only changes when the generated sources do.
-    [switch]$SkipShimBuild
+    [switch]$SkipShimBuild,
+    # A separate checkout to build the Bedrock surface from, when the default one is shared
+    # with another session that regenerates it. Defaults to the sibling checkout.
+    [string]$BedrockRoot = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -22,9 +25,11 @@ if (-not (Test-Path $ServerExecutable)) {
 
 $AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Bindings.Abi\Hosihikari.Bindings.Abi.csproj"
 
-# The Bedrock checkout is shared with other sessions that regenerate it, so the surface is
-# built from an isolated worktree and cannot change under the run.
-$BedrockRepo = Join-Path $WorkspaceRoot "Binding.Bedrock.smoke"
+$BedrockRepo = if ([string]::IsNullOrWhiteSpace($BedrockRoot)) {
+    Join-Path $WorkspaceRoot "Binding.Bedrock"
+} else {
+    (Resolve-Path $BedrockRoot).Path
+}
 $BedrockProject = Join-Path $BedrockRepo "src\Hosihikari.Bindings.Bedrock.Interop\Hosihikari.Bindings.Bedrock.Interop.csproj"
 
 dotnet build $BedrockProject -c Release --nologo -v:q -p:AbiProjectPath=$AbiProject
