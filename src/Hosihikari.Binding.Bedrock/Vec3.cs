@@ -1,4 +1,3 @@
-using InteropVec3 = Hosihikari.Bindings.Bedrock.Interop.Vec3;
 
 namespace Hosihikari.Binding.Bedrock;
 

@@ -48,14 +48,44 @@ public sealed class BlockPos : IInteropBridge<InteropBlockPos>
         set => Interop.z = value;
     }
 
-    /// <summary>The block position's centre as a vector.</summary>
-    public Vec3 Center => Vec3.From(Interop.center());
+    /// <summary>
+    /// The block position's centre as a vector, or <see langword="null"/> when the carrier
+    /// does not export the accessor.
+    /// </summary>
+    /// <remarks>
+    /// <c>BlockPos::center</c> is annotated MCNAPI in the carrier header and absent from the
+    /// run-time data of the current build, so a bound wrapper can fail here while the
+    /// component properties keep working.
+    /// </remarks>
+    public Vec3? Center => Wrap(Interop.center());
+
+    private static Vec3? Wrap(InteropVec3 value)
+    {
+        // The generated wrapper is built unconditionally, so a failed shim call comes back as
+        // a wrapper around a null handle rather than as null. Reading through it would fault.
+        if (value.Handle == 0)
+        {
+            value.Dispose();
+            return null;
+        }
+
+        return Vec3.From(value);
+    }
 
     /// <summary>The block position's bottom centre as a vector.</summary>
-    public Vec3 BottomCenter => Vec3.From(Interop.bottomCenter());
+    public Vec3? BottomCenter => Wrap(Interop.bottomCenter());
 
-    /// <summary>Converts to a bounding box.</summary>
-    public AABB ToAabb() => AABB.From(Interop.operator_AABB());
+    /// <summary>Converts to a bounding box, or <see langword="null"/> when the carrier cannot.</summary>
+    public AABB? ToAabb()
+    {
+        var value = Interop.operator_AABB();
+        if (value.Handle == 0)
+        {
+            return null;
+        }
+
+        return AABB.From(value);
+    }
 
     /// <inheritdoc/>
     public override string ToString() => Interop.toString();
