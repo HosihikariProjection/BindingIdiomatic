@@ -2,3 +2,4 @@
 Hosihikari.Binding.LeviLamina.ll.service.Functions	属性	静态类 Services 收拢全部 get* 访问器；无状态者静态属性、带参者为方法；返回类型不在本面，保持 nint?
 Hosihikari.Binding.LeviLamina.ll.command.CommandRegistrar	属性; 方法	借用单例；Instance/ServerInstance 静态属性；has* 属性；add*/remove*/set*/try* 保留方法；clear 与 compileCommand/executeCommand 是 stub，不包装
 Hosihikari.Binding.LeviLamina.ll.@event.EventBus	属性; 索引器; 方法	借用单例；事件 id 的 listener 数走索引器，listener id 取回走索引器；has* 属性；addListener/removeListener/publish 保留方法
+Hosihikari.Binding.LeviLamina.ll.memory.Functions	方法	仅 hook/unhook 经 Hook 令牌覆盖（逃生舱：目标地址按载体与版本，不跨载体）；hookEx/hookOptions 与其余自由函数留在 Interop
