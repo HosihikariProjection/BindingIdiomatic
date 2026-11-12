@@ -39,6 +39,13 @@ public sealed class OwnedAabb :
     /// <summary>The box centre; the shim allocates it, so dispose it.</summary>
     public OwnedVec3? Center => Interop.center() is { } value ? OwnedVec3.Adopt(value) : null;
 
+    /// <summary>Converts to a block-aligned box; the shim allocates it, so dispose it.</summary>
+    public OwnedBoundingBox? ToBoundingBox()
+    {
+        var value = Interop.operator_BoundingBox();
+        return value is null ? null : OwnedBoundingBox.Adopt(value);
+    }
+
     /// <summary>Grows the box by a distance and returns the new box, which the shim allocates.</summary>
     public OwnedAabb? Grow(Vec3 distance)
     {

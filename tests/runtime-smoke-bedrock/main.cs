@@ -11,6 +11,8 @@ using Hosihikari.Bindings.Bedrock.Interop;
 using BedrockVec3 = Hosihikari.Binding.Bedrock.Vec3;
 using BedrockAabb = Hosihikari.Binding.Bedrock.AABB;
 using BedrockOwnedAabb = Hosihikari.Binding.Bedrock.OwnedAabb;
+using BedrockBoundingBox = Hosihikari.Binding.Bedrock.BoundingBox;
+using BedrockOwnedBoundingBox = Hosihikari.Binding.Bedrock.OwnedBoundingBox;
 using BedrockBlockPos = Hosihikari.Binding.Bedrock.BlockPos;
 using BedrockOwnedChunkPos = Hosihikari.Binding.Bedrock.OwnedChunkPos;
 using InteropBlockPos = Hosihikari.Bindings.Bedrock.Interop.BlockPos;
@@ -123,6 +125,26 @@ public sealed class IdiomaticBedrockSmokePlugin : IPlugin
                     using var copy = BedrockOwnedAabb.CopyOf(BedrockAabb.From(source.Interop));
                     using var centre = copy.Center;
                     return $"distinct={copy.Handle != source.Handle} centre={centre?.X},{centre?.Y},{centre?.Z}";
+                });
+            }
+
+            // The block-aligned box pair. Its factories may not resolve on this snapshot.
+            using (var interopPos = InteropBlockPos.ZERO())
+            {
+                var corner = BedrockBlockPos.From(interopPos);
+                TryStep(resultPath, log, "bbox.owned", () =>
+                {
+                    using var box = new BedrockOwnedBoundingBox(corner, corner);
+                    using var side = box.SideLength;
+                    return $"side={side?.X},{side?.Y},{side?.Z} contains={box.Contains(corner)}";
+                });
+                TryStep(resultPath, log, "bbox.copy", () =>
+                {
+                    using var box = new BedrockOwnedBoundingBox(corner, corner);
+                    var borrowed = BedrockBoundingBox.From(box.Interop);
+                    using var copy = BedrockOwnedBoundingBox.CopyOf(borrowed);
+                    using var aabb = copy.ToAabb();
+                    return $"distinct={copy.Handle != box.Handle} aabb={aabb is not null}";
                 });
             }
 

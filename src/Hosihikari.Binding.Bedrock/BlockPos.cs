@@ -76,6 +76,18 @@ public sealed class BlockPos : IInteropBridge<InteropBlockPos>
         return value is null ? null : OwnedAabb.Adopt(value);
     }
 
+    /// <summary>
+    /// Converts to a block-aligned box, or <see langword="null"/> when the carrier cannot.
+    /// </summary>
+    /// <remarks>
+    /// The shim allocates the box, so the result is owned: dispose it.
+    /// </remarks>
+    public OwnedBoundingBox? ToBoundingBox()
+    {
+        var value = Interop.operator_BoundingBox();
+        return value is null ? null : OwnedBoundingBox.Adopt(value);
+    }
+
     /// <inheritdoc/>
     public override string ToString() => Interop.toString();
 
