@@ -20,6 +20,9 @@ public sealed class OwnedAabb :
         _interop = Factories.Require(InteropAabbB.Create(min.Interop, max.Interop), "a bounding box");
     }
 
+    /// <summary>Adopts a wrapper the shim already allocated.</summary>
+    internal static OwnedAabb Adopt(InteropAabbB interop) => new(interop);
+
     /// <summary>Copies a borrowed box into an owned one.</summary>
     public static OwnedAabb CopyOf(AABB other)
     {

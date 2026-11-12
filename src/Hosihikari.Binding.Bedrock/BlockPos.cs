@@ -64,11 +64,16 @@ public sealed class BlockPos : IInteropBridge<InteropBlockPos>
     /// <summary>The block position's bottom centre as a vector.</summary>
     public Vec3? BottomCenter => Wrap(Interop.bottomCenter());
 
-    /// <summary>Converts to a bounding box, or <see langword="null"/> when the carrier cannot.</summary>
-    public AABB? ToAabb()
+    /// <summary>
+    /// Converts to a bounding box, or <see langword="null"/> when the carrier cannot.
+    /// </summary>
+    /// <remarks>
+    /// The shim allocates the box, so the result is owned: dispose it.
+    /// </remarks>
+    public OwnedAabb? ToAabb()
     {
         var value = Interop.operator_AABB();
-        return value is null ? null : AABB.From(value);
+        return value is null ? null : OwnedAabb.Adopt(value);
     }
 
     /// <inheritdoc/>
