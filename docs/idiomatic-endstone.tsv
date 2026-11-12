@@ -6,3 +6,8 @@ Hosihikari.Binding.Endstone.endstone.OwnedItemStack	属性; 方法; 运算符; �
 Hosihikari.Binding.Endstone.endstone.Level	属性; 方法	无 Create，借用到达；get*/is* 折成属性；setTime 保留方法；getActors 为 nint[] 暂留
 Hosihikari.Binding.Endstone.endstone.UUID	属性; 方法	无 Create，借用到达；isNil/version 折成属性；begin/end/str/swap 保留方法（返回 nint 与多步操作）
 Hosihikari.Binding.Endstone.endstone.CommandMap	方法; 索引器	借用版；Create 是 stub（类无可访问析构），不出拥有版；getCommand 折成索引器；dispatch/registerCommand/clearCommands 保留方法
+Hosihikari.Binding.Endstone.endstone.Event	属性; 方法	借用版、仅回调期间有效；getEventName/isAsynchronous 折成属性；TryAs* 折成 As* 方法（返回可空包装）
+Hosihikari.Binding.Endstone.endstone.PlayerJoinEvent	属性	借用版、仅回调期间有效；getPlayer 经 AsPlayerEvent 折成 Player 属性
+Hosihikari.Binding.Endstone.endstone.PlayerQuitEvent	属性	借用版、仅回调期间有效；getPlayer 经 AsPlayerEvent 折成 Player 属性
+Hosihikari.Binding.Endstone.endstone.PlayerChatEvent	属性; 方法	借用版、仅回调期间有效；Message 可写回原生；Cancel/IsCancelled 经 ICancellable
+Hosihikari.Binding.Endstone.endstone.Plugin	属性	借用版；getName 折成名称属性；getServer/getPluginManager 留在事件注册路径内部
