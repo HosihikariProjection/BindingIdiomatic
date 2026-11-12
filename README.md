@@ -1,8 +1,10 @@
 # Hosihikari.Binding
 
+[English](README.md) | [简体中文](README.zh_hans.md)
+
 The hand-written .NET Idiomatic layer over the Hosihikari projection's Interop surfaces.
 
-`Hosihikari.Binding` is the shared base; `Hosihikari.Binding.{Endstone,LeviLamina}` sit on top of the matching Interop assembly. Idiomatic types wrap Interop wrappers, expose properties, events, operators, indexers and constructors, and hand the wrapper back through `.Interop` when something was not carried over.
+`Hosihikari.Binding` is the shared base; `Hosihikari.Binding.{Bedrock,Endstone,LeviLamina}` sit on top of the matching Interop assembly. Idiomatic types wrap Interop wrappers, expose properties, events, operators, indexers and constructors, and hand the wrapper back through `.Interop` when something was not carried over.
 
 ## Boundary
 
@@ -29,9 +31,10 @@ Nothing switches threads for you. Game object affinity is documented on each mem
 
 ## Current state
 
-The shared base, the Endstone player/server/item/level types and the LeviLamina service, command and event entry points are in. Bedrock has an empty manifest.
+The shared base carries the identity registry, scopes, event firing, the error channel and the server synchronization context with its task scheduler. The surfaces cover the Bedrock value types (vectors, block and chunk positions, the floating and block-aligned box pairs), the Endstone player/server/item/level/command/plugin types with managed event registration and action forms, and the LeviLamina service, command, event, hook and server-thread executor entry points.
 
-Two runtime smokes load the layer inside a real server:
+Three runtime smokes load the layer inside a real server:
 
 - `scripts/run-runtime-smoke.ps1 -ServerRoot <bds>` — LeviLamina carrier.
 - `scripts/run-runtime-smoke-endstone.ps1 -ServerRoot <endstone bds>` — Endstone carrier. The root must have the framework's Endstone host deployed (`HostingShim/carriers/endstone/deploy.bat`) and the `endstone` CLI available through the venv named by `-Python`.
+- `scripts/run-runtime-smoke-bedrock.ps1 -ServerRoot <bds> [-BedrockRoot <checkout>]` — Bedrock surface.
