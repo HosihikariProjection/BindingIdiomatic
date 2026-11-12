@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Hosihikari.Binding;
 
 var failures = 0;
@@ -90,6 +91,40 @@ identityScope.Identities.GetOrAdd(0x2000, 1, () => new Subject());
 identityScope.Dispose();
 Check("scope dispose clears identities", identityScope.Identities.TryGet<Subject>(0x2000, 1) is null);
 
+// Server context: continuations posted from anywhere run on the installing thread.
+using (var server = new FakeServer())
+{
+    var postedOn = 0;
+    server.Context.Post(_ => postedOn = Environment.CurrentManagedThreadId, null);
+    Check(
+        "post runs on the server thread",
+        SpinWait.SpinUntil(() => postedOn != 0, 2000) && postedOn == server.ThreadId);
+
+    var sentOn = 0;
+    server.Context.Send(_ => sentOn = Environment.CurrentManagedThreadId, null);
+    Check("send blocks until the server runs it", sentOn == server.ThreadId);
+
+    var scheduler = new ServerTaskScheduler(server.Context);
+    var taskOn = 0;
+    Task.Factory.StartNew(
+        () => taskOn = Environment.CurrentManagedThreadId,
+        CancellationToken.None,
+        TaskCreationOptions.None,
+        scheduler).Wait(2000);
+    Check("task scheduler runs on the server thread", taskOn == server.ThreadId);
+}
+
+// A throwing continuation is reported instead of escaping onto the native caller.
+var contextErrors = new List<Exception>();
+using (var server = new FakeServer(contextErrors.Add))
+{
+    server.Context.Post(_ => throw new InvalidOperationException("boom"), null);
+    Check(
+        "continuation failure is reported",
+        SpinWait.SpinUntil(() => contextErrors.Count == 1, 2000)
+            && contextErrors[0] is InvalidOperationException);
+}
+
 Console.WriteLine(failures == 0 ? "OK" : $"{failures} failure(s)");
 return failures == 0 ? 0 : 1;
 
@@ -108,6 +143,45 @@ static bool Throws<TException>(Action action) where TException : Exception
 
 sealed class Subject
 {
+}
+
+sealed class FakeServer : IServerExecutor, IDisposable
+{
+    private readonly BlockingCollection<Action> _queue = new();
+    private readonly Thread _thread;
+    private readonly ManualResetEventSlim _ready = new();
+
+    public FakeServer(Action<Exception>? onError = null)
+    {
+        _thread = new Thread(() =>
+        {
+            ThreadId = Environment.CurrentManagedThreadId;
+            Context = ServerSynchronizationContext.Install(this, onError);
+            _ready.Set();
+            foreach (var work in _queue.GetConsumingEnumerable())
+            {
+                work();
+            }
+        })
+        {
+            IsBackground = true,
+            Name = "fake-server",
+        };
+        _thread.Start();
+        _ready.Wait();
+    }
+
+    public int ThreadId { get; private set; }
+
+    public ServerSynchronizationContext Context { get; private set; } = null!;
+
+    public void Post(Action work) => _queue.Add(work);
+
+    public void Dispose()
+    {
+        _queue.CompleteAdding();
+        _thread.Join();
+    }
 }
 
 sealed class Disposable(int id, List<int> log) : IDisposable
