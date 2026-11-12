@@ -26,8 +26,8 @@ public sealed class AABB : IInteropBridge<InteropAabb>
     /// <summary>The native handle, or zero once the instance was invalidated.</summary>
     public nint Handle => _interop?.Handle ?? 0;
 
-    /// <summary>The box centre, or <see langword="null"/> when the carrier does not export it.</summary>
-    public Vec3? Center => Interop.center() is { } value ? Vec3.From(value) : null;
+    /// <summary>The box centre; the shim allocates it, so dispose it.</summary>
+    public OwnedVec3? Center => Interop.center() is { } value ? OwnedVec3.Adopt(value) : null;
 
     /// <summary>Whether the box contains another box.</summary>
     public bool Contains(AABB other)

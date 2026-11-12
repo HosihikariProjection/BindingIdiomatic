@@ -55,14 +55,14 @@ public sealed class BlockPos : IInteropBridge<InteropBlockPos>
     /// <remarks>
     /// <c>BlockPos::center</c> is annotated MCNAPI in the carrier header and absent from the
     /// run-time data of the current build, so a bound wrapper can fail here while the
-    /// component properties keep working.
+    /// component properties keep working. The shim allocates what it returns, so dispose it.
     /// </remarks>
-    public Vec3? Center => Wrap(Interop.center());
+    public OwnedVec3? Center => Adopt(Interop.center());
 
-    private static Vec3? Wrap(InteropVec3? value) => value is null ? null : Vec3.From(value);
+    private static OwnedVec3? Adopt(InteropVec3? value) => value is null ? null : OwnedVec3.Adopt(value);
 
-    /// <summary>The block position's bottom centre as a vector.</summary>
-    public Vec3? BottomCenter => Wrap(Interop.bottomCenter());
+    /// <summary>The block position's bottom centre as a vector; dispose it.</summary>
+    public OwnedVec3? BottomCenter => Adopt(Interop.bottomCenter());
 
     /// <summary>
     /// Converts to a bounding box, or <see langword="null"/> when the carrier cannot.
