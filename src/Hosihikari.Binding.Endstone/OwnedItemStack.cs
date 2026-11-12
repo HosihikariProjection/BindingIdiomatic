@@ -1,3 +1,5 @@
+using NativeMethods = Hosihikari.Bindings.Endstone.Interop.NativeMethods;
+
 namespace Hosihikari.Binding.Endstone;
 
 /// <summary>An item stack the caller owns and must dispose.</summary>
@@ -16,7 +18,7 @@ public sealed class OwnedItemStack :
 
     /// <summary>Creates a stack of <paramref name="type"/> with an amount and data value.</summary>
     public OwnedItemStack(Identifier_endstone__ItemType_ type, int amount, int data)
-        : this(InteropItemStack.Create(type, amount, data))
+        : this(Require(InteropItemStack.Create(type, amount, data), "an item stack"))
     {
     }
 
@@ -24,8 +26,12 @@ public sealed class OwnedItemStack :
     public static OwnedItemStack FromInterop(InteropItemStack other)
     {
         ArgumentNullException.ThrowIfNull(other);
-        return new OwnedItemStack(InteropItemStack.Create_bea8b69c(other));
+        return new OwnedItemStack(Require(InteropItemStack.Create_bea8b69c(other), "a copied item stack"));
     }
+
+    private static InteropItemStack Require(InteropItemStack? created, string what) =>
+        created ?? throw new InvalidOperationException(
+            $"Could not create {what}: {NativeMethods.GetLastError() ?? "the shim returned no object."}");
 
     /// <summary>Copies a borrowed stack into an owned one.</summary>
     /// <param name="other">The borrowed stack to copy.</param>
