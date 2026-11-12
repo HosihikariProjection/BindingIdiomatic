@@ -11,17 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Pinned so a push to a sibling repository cannot change what this run builds;
+      # bump the pair together with the package versions they are packed against.
       - name: ABI contract
         uses: actions/checkout@v4
         with:
           repository: HosihikariProjection/BindingAbi
           path: Binding.Abi
+          ref: 0cefbb52067d31c8488269d2f1a701624c3a8729
 
       - name: Endstone Interop
         uses: actions/checkout@v4
         with:
           repository: HosihikariProjection/EndstoneBinding
           path: Binding.Endstone
+          ref: 53512018a19e895971e37543d37ed37b7511f186
 
       - name: LeviLamina Interop
         uses: actions/checkout@v4
