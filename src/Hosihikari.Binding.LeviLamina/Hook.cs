@@ -24,9 +24,9 @@ public enum HookPriority
 
 /// <summary>A function detour installed through the loader's hook library.</summary>
 /// <remarks>
-/// Low-level escape hatch: the target is a raw address the caller resolved against a specific
-/// carrier build, so a hook is not portable across carriers or versions. Disposing removes the
-/// detour.
+/// The native analogue of Paper's runtime instrumentation: the mechanism is portable, while the
+/// target is a raw address resolved against a specific carrier build, so a hook is tied to that
+/// carrier and version. Disposing removes the detour.
 /// </remarks>
 public sealed class Hook : IDisposable
 {
