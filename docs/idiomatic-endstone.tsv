@@ -11,3 +11,4 @@ Hosihikari.Binding.Endstone.endstone.PlayerJoinEvent	属性	借用版、仅回�
 Hosihikari.Binding.Endstone.endstone.PlayerQuitEvent	属性	借用版、仅回调期间有效；getPlayer 经 AsPlayerEvent 折成 Player 属性
 Hosihikari.Binding.Endstone.endstone.PlayerChatEvent	属性; 方法	借用版、仅回调期间有效；Message 可写回原生；Cancel/IsCancelled 经 ICancellable
 Hosihikari.Binding.Endstone.endstone.Plugin	属性	借用版；getName 折成名称属性；getServer/getPluginManager 留在事件注册路径内部
+Hosihikari.Binding.Endstone.endstone.ActionForm	属性; 方法	拥有版；Create 走构造函数；addButton 收托管点击回调；setTitle/setContent 链式设置；Show 经 Form 变体发送；关闭回调走 Form 基类
