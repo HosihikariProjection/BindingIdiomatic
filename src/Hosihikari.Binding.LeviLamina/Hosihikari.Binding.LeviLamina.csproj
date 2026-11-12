@@ -16,7 +16,7 @@
 
   <PropertyGroup>
     <PackageId>Hosihikari.Binding.LeviLamina</PackageId>
-    <Version>26.60.2-r0</Version>
+    <Version>26.60.6-r0</Version>
     <Authors>Hosihikari</Authors>
     <Description>Hand-written .NET Idiomatic layer over the LeviLamina Interop surface.</Description>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
@@ -32,10 +32,10 @@
          range on the Interop this package was built against. -->
     <ProjectReference Include="$(LeviLaminaInteropProjectPath)"
                       Condition="'$(LeviLaminaInteropProjectPath)' != ''"
-                      Version="[26.60.2-r0]" />
+                      Version="[26.60.6-r0]" />
     <ProjectReference Include="../../../Binding.LeviLamina/src/Hosihikari.Bindings.LeviLamina.Interop/Hosihikari.Bindings.LeviLamina.Interop.csproj"
                       Condition="'$(LeviLaminaInteropProjectPath)' == ''"
-                      Version="[26.60.2-r0]" />
+                      Version="[26.60.6-r0]" />
   </ItemGroup>
 
   <ItemGroup>
