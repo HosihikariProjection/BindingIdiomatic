@@ -27,7 +27,7 @@ public sealed class OwnedAabb :
     public static OwnedAabb CopyOf(AABB other)
     {
         ArgumentNullException.ThrowIfNull(other);
-        return new OwnedAabb(Factories.Require(Snapshots.Rebuild(other.Interop), "a copied bounding box"));
+        return new OwnedAabb(Factories.Require(InteropAabbB.Create(other.Interop), "a copied bounding box"));
     }
 
     /// <inheritdoc/>
@@ -40,18 +40,18 @@ public sealed class OwnedAabb :
     public OwnedVec3? Center => Interop.center() is { } value ? OwnedVec3.Adopt(value) : null;
 
     /// <summary>Grows the box by a distance and returns the new box, which the shim allocates.</summary>
-    public AABB? Grow(Vec3 distance)
+    public OwnedAabb? Grow(Vec3 distance)
     {
         ArgumentNullException.ThrowIfNull(distance);
         var value = Interop.cloneAndGrow(distance.Interop);
-        return value is null ? null : AABB.From(value);
+        return value is null ? null : OwnedAabb.Adopt(value);
     }
 
     /// <summary>Grows the box by a radius and returns the new box, which the shim allocates.</summary>
-    public AABB? Grow(float radius)
+    public OwnedAabb? Grow(float radius)
     {
         var value = Interop.cloneAndGrow(radius);
-        return value is null ? null : AABB.From(value);
+        return value is null ? null : OwnedAabb.Adopt(value);
     }
 
     /// <summary>Shrinks the box by an offset and returns the result.</summary>

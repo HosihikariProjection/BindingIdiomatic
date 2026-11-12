@@ -2,8 +2,9 @@ namespace Hosihikari.Binding.Bedrock;
 
 /// <summary>A chunk position.</summary>
 /// <remarks>
-/// The borrowed half. To create one, use <see cref="OwnedChunkPos"/>; to keep one, copy it with
-/// <see cref="OwnedChunkPos.CopyOf"/>. A borrowed position is not <see cref="IDisposable"/>.
+/// The borrowed half. To create one, use <see cref="OwnedChunkPos"/>. A borrowed position
+/// cannot be preserved: the projected surface has no factory or copy constructor for one,
+/// only conversions from a block position or a vector.
 /// </remarks>
 public sealed class ChunkPos : IInteropBridge<InteropChunkPos>
 {

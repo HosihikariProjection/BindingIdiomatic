@@ -31,16 +31,6 @@ public sealed class OwnedChunkPos :
         return Factories.Require(InteropChunkPos.Create(position.Interop), "a chunk position");
     }
 
-    /// <summary>Copies a borrowed chunk position into an owned one.</summary>
-    public static OwnedChunkPos CopyOf(ChunkPos other)
-    {
-        ArgumentNullException.ThrowIfNull(other);
-        // CopyOf wraps the borrowed wrapper directly: Create only takes a BlockPos or a Vec3,
-        // so rebuilding from the wrapper needs the converting constructor instead.
-        return new OwnedChunkPos(new InteropChunkPos(other.Handle));
-    }
-
-
     /// <inheritdoc/>
     public InteropChunkPos Interop => _interop ?? throw new ObjectDisposedException(nameof(OwnedChunkPos));
 

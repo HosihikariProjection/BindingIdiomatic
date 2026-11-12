@@ -9,11 +9,11 @@ using Hosihikari.Binding.Bedrock;
 using IoPath = System.IO.Path;
 using Hosihikari.Bindings.Bedrock.Interop;
 using BedrockVec3 = Hosihikari.Binding.Bedrock.Vec3;
+using BedrockAabb = Hosihikari.Binding.Bedrock.AABB;
+using BedrockOwnedAabb = Hosihikari.Binding.Bedrock.OwnedAabb;
 using BedrockBlockPos = Hosihikari.Binding.Bedrock.BlockPos;
-using BedrockChunkPos = Hosihikari.Binding.Bedrock.ChunkPos;
 using BedrockOwnedChunkPos = Hosihikari.Binding.Bedrock.OwnedChunkPos;
 using InteropBlockPos = Hosihikari.Bindings.Bedrock.Interop.BlockPos;
-using InteropChunkPos = Hosihikari.Bindings.Bedrock.Interop.ChunkPos;
 using InteropVec3 = Hosihikari.Bindings.Bedrock.Interop.Vec3;
 
 // Exercises the Bedrock Idiomatic surface with the values the 1.26.60.6 runtime data
@@ -108,15 +108,21 @@ public sealed class IdiomaticBedrockSmokePlugin : IPlugin
                 });
             }
 
-            using (var interopVec = InteropVec3.ZERO())
+            // A real copy of a borrowed box: the projected surface exposes the copy
+            // constructor, so the copy must live in a distinct native record.
+            using (var interopPos = InteropBlockPos.ZERO())
             {
-                var vec = BedrockVec3.From(interopVec);
-                TryStep(resultPath, log, "chunk.copy", () =>
+                TryStep(resultPath, log, "aabb.copy", () =>
                 {
-                    using var owner = new BedrockOwnedChunkPos(vec);
-                    var borrowed = BedrockChunkPos.From(owner.Interop);
-                    using var copy = BedrockOwnedChunkPos.CopyOf(borrowed);
-                    return $"{copy.X},{copy.Z} equal={borrowed == BedrockChunkPos.From(copy.Interop)}";
+                    using var source = BedrockBlockPos.From(interopPos).ToAabb();
+                    if (source is null)
+                    {
+                        return "missing";
+                    }
+
+                    using var copy = BedrockOwnedAabb.CopyOf(BedrockAabb.From(source.Interop));
+                    using var centre = copy.Center;
+                    return $"distinct={copy.Handle != source.Handle} centre={centre?.X},{centre?.Y},{centre?.Z}";
                 });
             }
 
