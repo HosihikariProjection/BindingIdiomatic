@@ -4,6 +4,11 @@ param(
     [string]$Python = "",
     [string]$LlvmRoot = "$env:LOCALAPPDATA\Temp\hosihikari-llvm\clang+llvm-23.1.0-x86_64-pc-windows-msvc",
     [string]$GeneratorRoot = "",
+    # The server's host is a released v1 build; the local framework may be on v2, whose loader
+    # cannot load into it. Name a v1 checkout here when the two diverge.
+    [string]$LoaderRepo = "",
+    # The shim only changes when the generated sources do; keep it across reruns.
+    [switch]$SkipShimBuild,
     [int]$TimeoutSeconds = 180
 )
 
@@ -29,6 +34,11 @@ $EndstoneRoot = Join-Path $ServerRoot "bedrock_server.exe"
 if (-not (Test-Path $EndstoneRoot)) {
     throw "bedrock_server.exe was not found under $ServerRoot."
 }
+$Busy = Get-Process bedrock_server -ErrorAction SilentlyContinue |
+    Where-Object { $_.Path -like "$ServerRoot\*" }
+if ($Busy) {
+    throw "A server from $ServerRoot is already running (PID $($Busy.Id -join ', ')); stop it first."
+}
 
 $AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Bindings.Abi\Hosihikari.Bindings.Abi.csproj"
 $EndstoneProject = Join-Path $WorkspaceRoot "Binding.Endstone\src\Hosihikari.Bindings.Endstone.Interop\Hosihikari.Bindings.Endstone.Interop.csproj"
@@ -40,9 +50,11 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $BindingRoot = Join-Path $WorkspaceRoot "Binding.Endstone"
-& (Join-Path $BindingRoot "native\BindingShim\build.ps1") -EndstoneRoot (Join-Path $WorkspaceRoot "Third\Endstone") -GeneratorRoot $GeneratorRoot -LlvmRoot $LlvmRoot
-if ($LASTEXITCODE -ne 0) {
-    throw "the Endstone shim build failed with exit code $LASTEXITCODE."
+if (-not $SkipShimBuild) {
+    & (Join-Path $BindingRoot "native\BindingShim\build.ps1") -EndstoneRoot (Join-Path $WorkspaceRoot "Third\Endstone") -GeneratorRoot $GeneratorRoot -LlvmRoot $LlvmRoot
+    if ($LASTEXITCODE -ne 0) {
+        throw "the Endstone shim build failed with exit code $LASTEXITCODE."
+    }
 }
 
 # The host and the managed core come from the framework; deploy them once per server root.
@@ -52,7 +64,11 @@ if (-not (Test-Path $HostPlugin)) {
 }
 
 # The C# loader is itself a plugin package.
-$LoaderRepo = Join-Path $FrameworkRoot "Framework\PluginLoader.CSharp"
+$LoaderRepo = if ([string]::IsNullOrWhiteSpace($LoaderRepo)) {
+    Join-Path $FrameworkRoot "Framework\PluginLoader.CSharp"
+} else {
+    (Resolve-Path $LoaderRepo).Path
+}
 dotnet build (Join-Path $LoaderRepo "src\Hosihikari.PluginLoader.CSharp.csproj") -c Release --nologo -v:q
 if ($LASTEXITCODE -ne 0) {
     throw "the C# loader build failed with exit code $LASTEXITCODE."
@@ -130,6 +146,11 @@ if (-not $Process.HasExited) {
     $Process.Kill()
     $Process.WaitForExit(10000) | Out-Null
 }
+
+# Killing the cmd driver does not reach the server it spawned; stop that one too.
+Get-Process bedrock_server -ErrorAction SilentlyContinue |
+    Where-Object { $_.Path -like "$ServerRoot\*" } |
+    Stop-Process -Force -ErrorAction SilentlyContinue
 
 if (-not (Test-Path $ResultPath)) {
     throw "The Endstone runtime smoke did not produce $ResultPath within $TimeoutSeconds seconds. See $StandardOutput."
