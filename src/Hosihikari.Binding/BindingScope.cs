@@ -41,12 +41,15 @@ public sealed class BindingScope : IDisposable
     /// </summary>
     /// <remarks>
     /// A default scope lives as long as its load context, which is the right lifetime for a plugin
-    /// that never creates one explicitly. Callers that collect earlier should create their own.
+    /// that never creates one explicitly. It tracks identities, because every bridge requires a
+    /// registry. Callers that collect earlier should create their own.
     /// </remarks>
     public static BindingScope For(Assembly assembly)
     {
         ArgumentNullException.ThrowIfNull(assembly);
-        return Defaults.GetValue(assembly, static _ => new BindingScope());
+        return Defaults.GetValue(
+            assembly,
+            static _ => new BindingScope { Identities = new IdentityRegistry() });
     }
 
     /// <summary>Replaces the default scope for <paramref name="assembly"/>.</summary>
