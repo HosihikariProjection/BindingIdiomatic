@@ -5,10 +5,11 @@ namespace Hosihikari.Binding.Endstone;
 
 /// <summary>A registration that dispatches a carrier event to a managed handler.</summary>
 /// <remarks>
-/// The carrier has no unregister call: the native handler lives as long as the owner plugin.
-/// Disposing therefore only drops the managed delegate — the native side keeps invoking the
-/// trampoline, which returns immediately. The callback state stays rooted until the carrier
-/// destroys the native handler and calls the release pointer.
+/// There is no per-subscription unregister call. The carrier removes every handler belonging to
+/// a plugin when that plugin is disabled (<c>EndstonePluginManager::disablePlugin</c> calls
+/// <c>HandlerList::unregister(plugin)</c>), which destroys the native handler, runs the release
+/// pointer and frees the callback state. Disposing here only drops the managed delegate first —
+/// until the carrier gets there, the trampoline keeps being invoked and returns immediately.
 /// </remarks>
 public sealed class EventSubscription : IDisposable
 {
