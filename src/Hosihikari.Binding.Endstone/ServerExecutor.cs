@@ -29,7 +29,14 @@ public sealed class ServerExecutor : IServerExecutor
     {
         ArgumentNullException.ThrowIfNull(work);
         var state = new SchedulerWork(work);
-        _scheduler.runTask(_owner.Interop, SchedulerWork.InvokePointer, state.UserData, SchedulerWork.ReleasePointer);
+        // The shim builds the callback closure before calling runTask, so a refused task (the
+        // plugin is not enabled) still destroys the closure and calls the release pointer: the
+        // state is freed either way and must not be released here.
+        using var task = _scheduler.runTask(
+            _owner.Interop,
+            SchedulerWork.InvokePointer,
+            state.UserData,
+            SchedulerWork.ReleasePointer);
     }
 }
 
@@ -65,6 +72,7 @@ internal sealed class SchedulerWork
             // reports its own callback failures; anything else posted here is the host's bug.
         }
     }
+
 }
 
 internal static class SchedulerTrampoline
