@@ -16,7 +16,7 @@
 
   <PropertyGroup>
     <PackageId>Hosihikari.Binding.Endstone</PackageId>
-    <Version>0.11.15-r0</Version>
+    <Version>0.11.16-r0</Version>
     <Authors>Hosihikari</Authors>
     <Description>Hand-written .NET Idiomatic layer over the Endstone Interop surface.</Description>
     <PackageLicenseExpression>LGPL-3.0-or-later</PackageLicenseExpression>
@@ -32,10 +32,10 @@
          range on the Interop this package was built against. -->
     <ProjectReference Include="$(EndstoneInteropProjectPath)"
                       Condition="'$(EndstoneInteropProjectPath)' != ''"
-                      Version="[0.11.15-r0]" />
+                      Version="[0.11.16-r0]" />
     <ProjectReference Include="../../../Binding.Endstone/src/Hosihikari.Binding.Endstone.Interop/Hosihikari.Binding.Endstone.Interop.csproj"
                       Condition="'$(EndstoneInteropProjectPath)' == ''"
-                      Version="[0.11.15-r0]" />
+                      Version="[0.11.16-r0]" />
   </ItemGroup>
 
   <ItemGroup>
