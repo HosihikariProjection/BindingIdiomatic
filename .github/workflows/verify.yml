@@ -25,7 +25,7 @@ jobs:
         with:
           repository: HosihikariProjection/EndstoneBinding
           path: Binding.Endstone
-          ref: a56a93baf37061a9a088e3ccdb627e988f2c04bd
+          ref: 173c29aa4794ba016c65e35c8755d9b873443203
 
       - name: LeviLamina Interop
         uses: actions/checkout@v4
