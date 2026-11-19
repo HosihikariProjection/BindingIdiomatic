@@ -18,14 +18,14 @@ jobs:
         with:
           repository: HosihikariProjection/BindingAbi
           path: Binding.Abi
-          ref: 5b8d95f
+          ref: 5b8d95f480afe4ccab9778a139da8e694564e45f
 
       - name: Endstone Interop
         uses: actions/checkout@v4
         with:
           repository: HosihikariProjection/EndstoneBinding
           path: Binding.Endstone
-          ref: 671abdd
+          ref: a56a93baf37061a9a088e3ccdb627e988f2c04bd
 
       - name: LeviLamina Interop
         uses: actions/checkout@v4
