@@ -23,6 +23,8 @@ if (-not (Test-Path $ServerExecutable)) {
     throw "bedrock_server_mod.exe was not found under $ServerRoot."
 }
 
+& (Join-Path $PSScriptRoot "Test-SmokePort.ps1") -ServerRoot $ServerRoot
+
 $AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Binding.Abi\Hosihikari.Binding.Abi.csproj"
 
 $BedrockRepo = if ([string]::IsNullOrWhiteSpace($BedrockRoot)) {

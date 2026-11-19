@@ -40,6 +40,9 @@ if ($Busy) {
     throw "A server from $ServerRoot is already running (PID $($Busy.Id -join ', ')); stop it first."
 }
 
+# The process check cannot see a server started from a different root; the port can.
+& (Join-Path $PSScriptRoot "Test-SmokePort.ps1") -ServerRoot $ServerRoot
+
 $AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Binding.Abi\Hosihikari.Binding.Abi.csproj"
 $EndstoneProject = Join-Path $WorkspaceRoot "Binding.Endstone\src\Hosihikari.Binding.Endstone.Interop\Hosihikari.Binding.Endstone.Interop.csproj"
 
