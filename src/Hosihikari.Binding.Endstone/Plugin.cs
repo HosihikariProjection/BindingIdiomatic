@@ -1,4 +1,4 @@
-using InteropPlugin = Hosihikari.Bindings.Endstone.Interop.endstone.Plugin;
+using InteropPlugin = global::Hosihikari.Binding.Endstone.Interop.endstone.Plugin;
 
 namespace Hosihikari.Binding.Endstone;
 

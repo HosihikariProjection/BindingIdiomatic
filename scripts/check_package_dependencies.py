@@ -19,10 +19,10 @@ from pathlib import Path
 # ABI types cross the Idiomatic boundary unchanged, so the base is pinned to the ABI the
 # surfaces were built against for the same reason the pairs are pinned to each other.
 PAIRS = {
-    "Hosihikari.Binding": "Hosihikari.Bindings.Abi",
-    "Hosihikari.Binding.Bedrock": "Hosihikari.Bindings.Bedrock.Interop",
-    "Hosihikari.Binding.Endstone": "Hosihikari.Bindings.Endstone.Interop",
-    "Hosihikari.Binding.LeviLamina": "Hosihikari.Bindings.LeviLamina.Interop",
+    "Hosihikari.Binding": "Hosihikari.Binding.Abi",
+    "Hosihikari.Binding.Bedrock": "Hosihikari.Binding.Bedrock.Interop",
+    "Hosihikari.Binding.Endstone": "Hosihikari.Binding.Endstone.Interop",
+    "Hosihikari.Binding.LeviLamina": "Hosihikari.Binding.LeviLamina.Interop",
 }
 
 DEPENDENCY = re.compile(r'<dependency id="([^"]+)" version="([^"]+)"')

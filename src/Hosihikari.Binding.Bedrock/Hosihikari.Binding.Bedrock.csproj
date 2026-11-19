@@ -31,7 +31,7 @@
     <ProjectReference Include="$(BedrockInteropProjectPath)"
                       Condition="'$(BedrockInteropProjectPath)' != ''"
                       Version="[1.26.60-r0]" />
-    <ProjectReference Include="../../../Binding.Bedrock/src/Hosihikari.Bindings.Bedrock.Interop/Hosihikari.Bindings.Bedrock.Interop.csproj"
+    <ProjectReference Include="../../../Binding.Bedrock/src/Hosihikari.Binding.Bedrock.Interop/Hosihikari.Binding.Bedrock.Interop.csproj"
                       Condition="'$(BedrockInteropProjectPath)' == ''"
                       Version="[1.26.60-r0]" />
   </ItemGroup>

@@ -33,7 +33,7 @@
     <ProjectReference Include="$(EndstoneInteropProjectPath)"
                       Condition="'$(EndstoneInteropProjectPath)' != ''"
                       Version="[0.11.15-r0]" />
-    <ProjectReference Include="../../../Binding.Endstone/src/Hosihikari.Bindings.Endstone.Interop/Hosihikari.Bindings.Endstone.Interop.csproj"
+    <ProjectReference Include="../../../Binding.Endstone/src/Hosihikari.Binding.Endstone.Interop/Hosihikari.Binding.Endstone.Interop.csproj"
                       Condition="'$(EndstoneInteropProjectPath)' == ''"
                       Version="[0.11.15-r0]" />
   </ItemGroup>

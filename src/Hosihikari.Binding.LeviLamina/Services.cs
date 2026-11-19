@@ -1,4 +1,4 @@
-using InteropServiceFunctions = Hosihikari.Bindings.LeviLamina.Interop.ll.service.Functions;
+using InteropServiceFunctions = global::Hosihikari.Binding.LeviLamina.Interop.ll.service.Functions;
 
 namespace Hosihikari.Binding.LeviLamina;
 

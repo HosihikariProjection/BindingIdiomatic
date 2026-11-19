@@ -1,4 +1,4 @@
-using InteropPlayerChatEvent = Hosihikari.Bindings.Endstone.Interop.endstone.PlayerChatEvent;
+using InteropPlayerChatEvent = global::Hosihikari.Binding.Endstone.Interop.endstone.PlayerChatEvent;
 
 namespace Hosihikari.Binding.Endstone;
 

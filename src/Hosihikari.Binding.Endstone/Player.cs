@@ -133,7 +133,7 @@ public sealed class Player : IInteropBridge<InteropPlayer>
     public void ResetTitle() => Interop.resetTitle();
 
     /// <summary>Sends a form to the player.</summary>
-    public void SendForm(Bindings.Endstone.Interop.Variant_e1e3d57e form) => Interop.sendForm(form);
+    public void SendForm(Binding.Endstone.Interop.Variant_e1e3d57e form) => Interop.sendForm(form);
 
     /// <summary>Sends a map to the player.</summary>
     public void SendMap(MapView map) => Interop.sendMap(map);

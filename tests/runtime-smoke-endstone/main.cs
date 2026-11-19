@@ -5,10 +5,10 @@ using System.Text;
 using Hosihikari;
 using Hosihikari.Binding;
 using Hosihikari.Binding.Endstone;
-using Hosihikari.Bindings.Endstone.Interop;
-using InteropServer = Hosihikari.Bindings.Endstone.Interop.endstone.Server;
-using InteropItemStack = Hosihikari.Bindings.Endstone.Interop.endstone.ItemStack;
-using InteropItemType = Hosihikari.Bindings.Endstone.Interop.endstone.Identifier_endstone__ItemType_;
+using Hosihikari.Binding.Endstone.Interop;
+using InteropServer = Hosihikari.Binding.Endstone.Interop.endstone.Server;
+using InteropItemStack = Hosihikari.Binding.Endstone.Interop.endstone.ItemStack;
+using InteropItemType = Hosihikari.Binding.Endstone.Interop.endstone.Identifier_endstone__ItemType_;
 
 /// <summary>Exercises the Endstone Idiomatic surface inside a real Endstone process.</summary>
 public sealed class IdiomaticEndstoneSmokePlugin : IPlugin
@@ -25,7 +25,7 @@ public sealed class IdiomaticEndstoneSmokePlugin : IPlugin
 
         try
         {
-            var shimPath = Path.Combine(_context.PackageDirectory, "Hosihikari.Bindings.Endstone.Shim.dll");
+            var shimPath = Path.Combine(_context.PackageDirectory, "Hosihikari.Binding.Endstone.Shim.dll");
             NativeMethods.Load(shimPath);
             log.AppendLine("load=ok");
 

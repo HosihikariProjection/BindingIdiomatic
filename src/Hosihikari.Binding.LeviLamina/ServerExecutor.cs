@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using InteropServerThreadExecutor = Hosihikari.Bindings.LeviLamina.Interop.ll.thread.ServerThreadExecutor;
+using InteropServerThreadExecutor = global::Hosihikari.Binding.LeviLamina.Interop.ll.thread.ServerThreadExecutor;
 
 namespace Hosihikari.Binding.LeviLamina;
 

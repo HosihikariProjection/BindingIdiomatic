@@ -1,4 +1,4 @@
-using NativeMethods = Hosihikari.Bindings.Endstone.Interop.NativeMethods;
+using NativeMethods = global::Hosihikari.Binding.Endstone.Interop.NativeMethods;
 
 namespace Hosihikari.Binding.Endstone;
 

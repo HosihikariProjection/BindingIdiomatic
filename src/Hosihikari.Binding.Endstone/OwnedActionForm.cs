@@ -1,8 +1,8 @@
 using System.Runtime.InteropServices;
-using InteropActionForm = Hosihikari.Bindings.Endstone.Interop.endstone.ActionForm;
-using InteropNativeMethods = Hosihikari.Bindings.Endstone.Interop.NativeMethods;
-using InteropVariantForm = Hosihikari.Bindings.Endstone.Interop.Variant_e1e3d57e;
-using InteropVariantText = Hosihikari.Bindings.Endstone.Interop.Variant_228e24a8;
+using InteropActionForm = global::Hosihikari.Binding.Endstone.Interop.endstone.ActionForm;
+using InteropNativeMethods = global::Hosihikari.Binding.Endstone.Interop.NativeMethods;
+using InteropVariantForm = global::Hosihikari.Binding.Endstone.Interop.Variant_e1e3d57e;
+using InteropVariantText = global::Hosihikari.Binding.Endstone.Interop.Variant_228e24a8;
 
 namespace Hosihikari.Binding.Endstone;
 

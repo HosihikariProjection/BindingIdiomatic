@@ -56,15 +56,15 @@ jobs:
       - name: Build
         run: >
           dotnet build Hosihikari.Binding.slnx -c Release
-          -p:AbiProjectPath=${{ github.workspace }}/Binding.Abi/src/Hosihikari.Bindings.Abi/Hosihikari.Bindings.Abi.csproj
-          -p:EndstoneInteropProjectPath=${{ github.workspace }}/Binding.Endstone/src/Hosihikari.Bindings.Endstone.Interop/Hosihikari.Bindings.Endstone.Interop.csproj
-          -p:LeviLaminaInteropProjectPath=${{ github.workspace }}/Binding.LeviLamina/src/Hosihikari.Bindings.LeviLamina.Interop/Hosihikari.Bindings.LeviLamina.Interop.csproj
-          -p:BedrockInteropProjectPath=${{ github.workspace }}/Binding.Bedrock/src/Hosihikari.Bindings.Bedrock.Interop/Hosihikari.Bindings.Bedrock.Interop.csproj
+          -p:AbiProjectPath=${{ github.workspace }}/Binding.Abi/src/Hosihikari.Binding.Abi/Hosihikari.Binding.Abi.csproj
+          -p:EndstoneInteropProjectPath=${{ github.workspace }}/Binding.Endstone/src/Hosihikari.Binding.Endstone.Interop/Hosihikari.Binding.Endstone.Interop.csproj
+          -p:LeviLaminaInteropProjectPath=${{ github.workspace }}/Binding.LeviLamina/src/Hosihikari.Binding.LeviLamina.Interop/Hosihikari.Binding.LeviLamina.Interop.csproj
+          -p:BedrockInteropProjectPath=${{ github.workspace }}/Binding.Bedrock/src/Hosihikari.Binding.Bedrock.Interop/Hosihikari.Binding.Bedrock.Interop.csproj
 
       - name: Test
         run: >
           dotnet run --project tests/Hosihikari.Binding.Tests/Hosihikari.Binding.Tests.csproj -c Release
-          -p:AbiProjectPath=${{ github.workspace }}/Binding.Abi/src/Hosihikari.Bindings.Abi/Hosihikari.Bindings.Abi.csproj
+          -p:AbiProjectPath=${{ github.workspace }}/Binding.Abi/src/Hosihikari.Binding.Abi/Hosihikari.Binding.Abi.csproj
 
       - name: Versions match the Interop pair
         run: python3 scripts/check_versions.py . ${{ github.workspace }}

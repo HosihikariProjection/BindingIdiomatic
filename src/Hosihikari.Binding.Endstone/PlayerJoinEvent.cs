@@ -1,4 +1,4 @@
-using InteropPlayerJoinEvent = Hosihikari.Bindings.Endstone.Interop.endstone.PlayerJoinEvent;
+using InteropPlayerJoinEvent = global::Hosihikari.Binding.Endstone.Interop.endstone.PlayerJoinEvent;
 
 namespace Hosihikari.Binding.Endstone;
 

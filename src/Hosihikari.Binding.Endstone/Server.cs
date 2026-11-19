@@ -182,10 +182,10 @@ public sealed class Server : IInteropBridge<InteropServer>
     private static BindingScope CallerScope() => BindingScope.For(Assembly.GetCallingAssembly());
 
     /// <summary>Broadcasts a raw message.</summary>
-    public void Broadcast(Bindings.Endstone.Interop.Variant_228e24a8 message) => Interop.broadcastMessage(message);
+    public void Broadcast(Binding.Endstone.Interop.Variant_228e24a8 message) => Interop.broadcastMessage(message);
 
     /// <summary>Broadcasts a message to players with a permission.</summary>
-    public void Broadcast(Bindings.Endstone.Interop.Variant_228e24a8 message, string permission) =>
+    public void Broadcast(Binding.Endstone.Interop.Variant_228e24a8 message, string permission) =>
         Interop.broadcast(message, permission);
 
     /// <summary>Runs a command as a sender.</summary>

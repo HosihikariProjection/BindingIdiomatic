@@ -1,4 +1,4 @@
-using InteropPlayerQuitEvent = Hosihikari.Bindings.Endstone.Interop.endstone.PlayerQuitEvent;
+using InteropPlayerQuitEvent = global::Hosihikari.Binding.Endstone.Interop.endstone.PlayerQuitEvent;
 
 namespace Hosihikari.Binding.Endstone;
 

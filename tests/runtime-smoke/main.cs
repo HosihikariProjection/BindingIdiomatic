@@ -5,7 +5,7 @@ using System.Text;
 using Hosihikari;
 using Hosihikari.Binding;
 using Hosihikari.Binding.LeviLamina;
-using Hosihikari.Bindings.LeviLamina.Interop;
+using Hosihikari.Binding.LeviLamina.Interop;
 
 /// <summary>Exercises the hand-written Idiomatic layer inside a real BDS process.</summary>
 public sealed class IdiomaticSmokePlugin : IPlugin
@@ -22,7 +22,7 @@ public sealed class IdiomaticSmokePlugin : IPlugin
 
         try
         {
-            var shimPath = Path.Combine(_context.PackageDirectory, "Hosihikari.Bindings.LeviLamina.Shim.dll");
+            var shimPath = Path.Combine(_context.PackageDirectory, "Hosihikari.Binding.LeviLamina.Shim.dll");
             NativeMethods.Load(shimPath);
             log.AppendLine("load=ok");
 

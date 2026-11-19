@@ -1,4 +1,4 @@
-using InteropBlockPos = Hosihikari.Bindings.Bedrock.Interop.BlockPos;
+using InteropBlockPos = global::Hosihikari.Binding.Bedrock.Interop.BlockPos;
 
 namespace Hosihikari.Binding.Bedrock;
 

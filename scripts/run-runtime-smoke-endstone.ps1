@@ -40,8 +40,8 @@ if ($Busy) {
     throw "A server from $ServerRoot is already running (PID $($Busy.Id -join ', ')); stop it first."
 }
 
-$AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Bindings.Abi\Hosihikari.Bindings.Abi.csproj"
-$EndstoneProject = Join-Path $WorkspaceRoot "Binding.Endstone\src\Hosihikari.Bindings.Endstone.Interop\Hosihikari.Bindings.Endstone.Interop.csproj"
+$AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Binding.Abi\Hosihikari.Binding.Abi.csproj"
+$EndstoneProject = Join-Path $WorkspaceRoot "Binding.Endstone\src\Hosihikari.Binding.Endstone.Interop\Hosihikari.Binding.Endstone.Interop.csproj"
 
 dotnet build (Join-Path $RepoRoot "Hosihikari.Binding.slnx") -c Release --nologo -v:q `
     -p:AbiProjectPath=$AbiProject -p:EndstoneInteropProjectPath=$EndstoneProject
@@ -89,11 +89,11 @@ Copy-Item (Join-Path $LoaderRepo "pack\manifest.json") $LoaderPackage -ErrorActi
     extraInfo    = [ordered]@{ api_version = '2'; manifest_version = '1'; loader = 'assembly' }
 } | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $LoaderPackage "manifest.json") -Encoding UTF8
 
-$InteropDll = Join-Path $WorkspaceRoot "Binding.Endstone\src\Hosihikari.Bindings.Endstone.Interop\bin\Release\net10.0\Hosihikari.Bindings.Endstone.Interop.dll"
-$AbiDll = Join-Path (Split-Path $InteropDll -Parent) "Hosihikari.Bindings.Abi.dll"
+$InteropDll = Join-Path $WorkspaceRoot "Binding.Endstone\src\Hosihikari.Binding.Endstone.Interop\bin\Release\net10.0\Hosihikari.Binding.Endstone.Interop.dll"
+$AbiDll = Join-Path (Split-Path $InteropDll -Parent) "Hosihikari.Binding.Abi.dll"
 $BaseDll = Join-Path $RepoRoot "src\Hosihikari.Binding\bin\Release\net10.0\Hosihikari.Binding.dll"
 $EndstoneIdiomaticDll = Join-Path $RepoRoot "src\Hosihikari.Binding.Endstone\bin\Release\net10.0\Hosihikari.Binding.Endstone.dll"
-$ShimDll = Join-Path $BindingRoot "artifacts\native\Hosihikari.Bindings.Endstone.Shim.dll"
+$ShimDll = Join-Path $BindingRoot "artifacts\native\Hosihikari.Binding.Endstone.Shim.dll"
 $PluginSource = Join-Path $RepoRoot "tests\runtime-smoke-endstone"
 $PluginTarget = Join-Path $ServerRoot "plugins\idiomatic-endstone-smoke"
 $DataTarget = Join-Path $ServerRoot "data\hosihikari\idiomatic-endstone-smoke"

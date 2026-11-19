@@ -28,7 +28,7 @@ public sealed class CommandMap : IInteropBridge<InteropCommandMap>
     /// <summary>Looks a command up by name.</summary>
     /// <param name="name">The command name.</param>
     /// <remarks>Returns the raw shared handle; command wrappers are a later batch.</remarks>
-    public Hosihikari.Bindings.Abi.SharedHandle? this[string name] => Interop.getCommand(name);
+    public Hosihikari.Binding.Abi.SharedHandle? this[string name] => Interop.getCommand(name);
 
     /// <summary>Whether two maps are equal.</summary>
     public static bool operator ==(CommandMap? left, CommandMap? right) =>

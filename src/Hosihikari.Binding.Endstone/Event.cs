@@ -1,4 +1,4 @@
-using InteropEvent = Hosihikari.Bindings.Endstone.Interop.endstone.Event;
+using InteropEvent = global::Hosihikari.Binding.Endstone.Interop.endstone.Event;
 
 namespace Hosihikari.Binding.Endstone;
 

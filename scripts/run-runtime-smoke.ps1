@@ -22,8 +22,8 @@ if (-not (Test-Path $ServerExecutable)) {
     throw "bedrock_server_mod.exe was not found under $ServerRoot."
 }
 
-$AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Bindings.Abi\Hosihikari.Bindings.Abi.csproj"
-$LeviProject = Join-Path $WorkspaceRoot "Binding.LeviLamina\src\Hosihikari.Bindings.LeviLamina.Interop\Hosihikari.Bindings.LeviLamina.Interop.csproj"
+$AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Binding.Abi\Hosihikari.Binding.Abi.csproj"
+$LeviProject = Join-Path $WorkspaceRoot "Binding.LeviLamina\src\Hosihikari.Binding.LeviLamina.Interop\Hosihikari.Binding.LeviLamina.Interop.csproj"
 
 dotnet build (Join-Path $RepoRoot "Hosihikari.Binding.slnx") -c Release --nologo -v:q `
     -p:AbiProjectPath=$AbiProject -p:LeviLaminaInteropProjectPath=$LeviProject
@@ -38,11 +38,11 @@ if ($LASTEXITCODE -ne 0) {
     throw "the shim build failed with exit code $LASTEXITCODE."
 }
 
-$InteropDll = Join-Path $LeviRepo "src\Hosihikari.Bindings.LeviLamina.Interop\bin\Release\net10.0\Hosihikari.Bindings.LeviLamina.Interop.dll"
-$AbiDll = Join-Path (Split-Path $InteropDll -Parent) "Hosihikari.Bindings.Abi.dll"
+$InteropDll = Join-Path $LeviRepo "src\Hosihikari.Binding.LeviLamina.Interop\bin\Release\net10.0\Hosihikari.Binding.LeviLamina.Interop.dll"
+$AbiDll = Join-Path (Split-Path $InteropDll -Parent) "Hosihikari.Binding.Abi.dll"
 $BaseDll = Join-Path $RepoRoot "src\Hosihikari.Binding\bin\Release\net10.0\Hosihikari.Binding.dll"
 $LeviIdiomaticDll = Join-Path $RepoRoot "src\Hosihikari.Binding.LeviLamina\bin\Release\net10.0\Hosihikari.Binding.LeviLamina.dll"
-$ShimDll = Join-Path $LeviRepo "artifacts\native\Hosihikari.Bindings.LeviLamina.Shim.dll"
+$ShimDll = Join-Path $LeviRepo "artifacts\native\Hosihikari.Binding.LeviLamina.Shim.dll"
 $PluginSource = Join-Path $RepoRoot "tests\runtime-smoke"
 $PluginTarget = Join-Path $ServerRoot "plugins\idiomatic-smoke"
 $DataTarget = Join-Path $ServerRoot "data\hosihikari\idiomatic-smoke"

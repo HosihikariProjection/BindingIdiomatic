@@ -1,6 +1,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using InteropCommandRegistrar = Hosihikari.Bindings.LeviLamina.Interop.ll.command.CommandRegistrar;
+using InteropCommandRegistrar = global::Hosihikari.Binding.LeviLamina.Interop.ll.command.CommandRegistrar;
 
 namespace Hosihikari.Binding.LeviLamina;
 
@@ -93,12 +93,12 @@ public sealed class CommandRegistrar : IInteropBridge<InteropCommandRegistrar>
     public bool SetSoftEnumValues(string name, string[] values) => Interop.setSoftEnumValues(name, values);
 
     /// <summary>Creates or fetches a command by name.</summary>
-    public Hosihikari.Bindings.LeviLamina.Interop.ll.command.CommandHandle GetOrCreateCommand(
+    public global::Hosihikari.Binding.LeviLamina.Interop.ll.command.CommandHandle GetOrCreateCommand(
         string name,
         string description,
         byte requirement,
-        Hosihikari.Bindings.LeviLamina.Interop.CommandFlag flag,
-        Hosihikari.Bindings.Abi.SharedHandle? mod) =>
+        global::Hosihikari.Binding.LeviLamina.Interop.CommandFlag flag,
+        Hosihikari.Binding.Abi.SharedHandle? mod) =>
         Interop.getOrCreateCommand(name, description, requirement, flag, mod);
 
     /// <summary>

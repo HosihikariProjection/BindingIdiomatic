@@ -7,7 +7,7 @@ using Hosihikari;
 using Hosihikari.Binding;
 using Hosihikari.Binding.Bedrock;
 using IoPath = System.IO.Path;
-using Hosihikari.Bindings.Bedrock.Interop;
+using Hosihikari.Binding.Bedrock.Interop;
 using BedrockVec3 = Hosihikari.Binding.Bedrock.Vec3;
 using BedrockAabb = Hosihikari.Binding.Bedrock.AABB;
 using BedrockOwnedAabb = Hosihikari.Binding.Bedrock.OwnedAabb;
@@ -15,8 +15,8 @@ using BedrockBoundingBox = Hosihikari.Binding.Bedrock.BoundingBox;
 using BedrockOwnedBoundingBox = Hosihikari.Binding.Bedrock.OwnedBoundingBox;
 using BedrockBlockPos = Hosihikari.Binding.Bedrock.BlockPos;
 using BedrockOwnedChunkPos = Hosihikari.Binding.Bedrock.OwnedChunkPos;
-using InteropBlockPos = Hosihikari.Bindings.Bedrock.Interop.BlockPos;
-using InteropVec3 = Hosihikari.Bindings.Bedrock.Interop.Vec3;
+using InteropBlockPos = Hosihikari.Binding.Bedrock.Interop.BlockPos;
+using InteropVec3 = Hosihikari.Binding.Bedrock.Interop.Vec3;
 
 // Exercises the Bedrock Idiomatic surface with the values the 1.26.60.6 runtime data
 // snapshot actually exposes: borrowed value records, an owned/borrowed pair with real
@@ -36,7 +36,7 @@ public sealed class IdiomaticBedrockSmokePlugin : IPlugin
 
         try
         {
-            NativeMethods.Load(IoPath.Combine(_context.PackageDirectory, "Hosihikari.Bindings.Bedrock.Shim.dll"));
+            NativeMethods.Load(IoPath.Combine(_context.PackageDirectory, "Hosihikari.Binding.Bedrock.Shim.dll"));
             log.AppendLine("load=ok");
             Flush(resultPath, log);
 

@@ -22,9 +22,9 @@ from pathlib import Path
 FORMS = {"属性", "方法", "事件", "运算符", "索引器", "构造函数"}
 
 INTEROP_ROOTS = {
-    "endstone": ("Binding.Endstone", "Hosihikari.Bindings.Endstone.Interop"),
-    "levilamina": ("Binding.LeviLamina", "Hosihikari.Bindings.LeviLamina.Interop"),
-    "bedrock": ("Binding.Bedrock", "Hosihikari.Bindings.Bedrock.Interop"),
+    "endstone": ("Binding.Endstone", "Hosihikari.Binding.Endstone.Interop"),
+    "levilamina": ("Binding.LeviLamina", "Hosihikari.Binding.LeviLamina.Interop"),
+    "bedrock": ("Binding.Bedrock", "Hosihikari.Binding.Bedrock.Interop"),
 }
 
 
@@ -36,7 +36,7 @@ def to_interop_name(name: str, surface: str) -> str:
     """
     surface_name = {"levilamina": "LeviLamina", "endstone": "Endstone", "bedrock": "Bedrock"}[surface]
     singular = f"Hosihikari.Binding.{surface_name}."
-    plural = f"Hosihikari.Bindings.{surface_name}.Interop."
+    plural = f"Hosihikari.Binding.{surface_name}.Interop."
     if not name.startswith(singular):
         return name
 

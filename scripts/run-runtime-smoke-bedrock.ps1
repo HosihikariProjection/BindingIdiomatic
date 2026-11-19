@@ -23,14 +23,14 @@ if (-not (Test-Path $ServerExecutable)) {
     throw "bedrock_server_mod.exe was not found under $ServerRoot."
 }
 
-$AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Bindings.Abi\Hosihikari.Bindings.Abi.csproj"
+$AbiProject = Join-Path $WorkspaceRoot "Binding.Abi\src\Hosihikari.Binding.Abi\Hosihikari.Binding.Abi.csproj"
 
 $BedrockRepo = if ([string]::IsNullOrWhiteSpace($BedrockRoot)) {
     Join-Path $WorkspaceRoot "Binding.Bedrock"
 } else {
     (Resolve-Path $BedrockRoot).Path
 }
-$BedrockProject = Join-Path $BedrockRepo "src\Hosihikari.Bindings.Bedrock.Interop\Hosihikari.Bindings.Bedrock.Interop.csproj"
+$BedrockProject = Join-Path $BedrockRepo "src\Hosihikari.Binding.Bedrock.Interop\Hosihikari.Binding.Bedrock.Interop.csproj"
 
 dotnet build $BedrockProject -c Release --nologo -v:q -p:AbiProjectPath=$AbiProject
 if ($LASTEXITCODE -ne 0) {
@@ -47,7 +47,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # The shim compiles carrier inline bodies and prelinks against the runtime data, so it needs
 # both; the carrier root is a workspace checkout, not something it can guess.
-$ShimOutput = Join-Path $BedrockRepo "artifacts\runtime-smoke\Hosihikari.Bindings.Bedrock.Shim.dll"
+$ShimOutput = Join-Path $BedrockRepo "artifacts\runtime-smoke\Hosihikari.Binding.Bedrock.Shim.dll"
 if (-not $SkipShimBuild) {
 & (Join-Path $BedrockRepo "native\BindingShim\build.ps1") -Configuration win-x64-server `
     -LeviLaminaRoot (Join-Path $WorkspaceRoot "Third\LeviLamina") `
@@ -58,8 +58,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 }
 
-$InteropDll = Join-Path $BedrockRepo "src\Hosihikari.Bindings.Bedrock.Interop\bin\Release\net10.0\Hosihikari.Bindings.Bedrock.Interop.dll"
-$AbiDll = Join-Path (Split-Path $InteropDll -Parent) "Hosihikari.Bindings.Abi.dll"
+$InteropDll = Join-Path $BedrockRepo "src\Hosihikari.Binding.Bedrock.Interop\bin\Release\net10.0\Hosihikari.Binding.Bedrock.Interop.dll"
+$AbiDll = Join-Path (Split-Path $InteropDll -Parent) "Hosihikari.Binding.Abi.dll"
 $BaseDll = Join-Path $RepoRoot "src\Hosihikari.Binding\bin\Release\net10.0\Hosihikari.Binding.dll"
 $BedrockIdiomaticDll = Join-Path $RepoRoot "src\Hosihikari.Binding.Bedrock\bin\Release\net10.0\Hosihikari.Binding.Bedrock.dll"
 $PluginSource = Join-Path $RepoRoot "tests\runtime-smoke-bedrock"

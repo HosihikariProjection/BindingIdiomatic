@@ -1,4 +1,4 @@
-using InteropAabb = Hosihikari.Bindings.Bedrock.Interop.AABB;
+using InteropAabb = global::Hosihikari.Binding.Bedrock.Interop.AABB;
 
 namespace Hosihikari.Binding.Bedrock;
 

@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using InteropEventBus = Hosihikari.Bindings.LeviLamina.Interop.ll.@event.EventBus;
-using InteropEventIdView = Hosihikari.Bindings.LeviLamina.Interop.ll.@event.EventIdView;
-using InteropSharedHandle = Hosihikari.Bindings.Abi.SharedHandle;
+using InteropEventBus = global::Hosihikari.Binding.LeviLamina.Interop.ll.@event.EventBus;
+using InteropEventIdView = global::Hosihikari.Binding.LeviLamina.Interop.ll.@event.EventIdView;
+using InteropSharedHandle = Hosihikari.Binding.Abi.SharedHandle;
 
 namespace Hosihikari.Binding.LeviLamina;
 
@@ -88,13 +88,13 @@ public sealed class EventBus : IInteropBridge<InteropEventBus>
 
     /// <summary>Publishes an event.</summary>
     public void Publish(
-        Hosihikari.Bindings.LeviLamina.Interop.ll.@event.Event @event,
+        global::Hosihikari.Binding.LeviLamina.Interop.ll.@event.Event @event,
         InteropEventIdView eventId) => Interop.publish(@event, eventId);
 
     /// <summary>Publishes an event under a module name.</summary>
     public void Publish(
         string modName,
-        Hosihikari.Bindings.LeviLamina.Interop.ll.@event.Event @event,
+        global::Hosihikari.Binding.LeviLamina.Interop.ll.@event.Event @event,
         InteropEventIdView eventId) => Interop.publish(modName, @event, eventId);
 
     /// <summary>

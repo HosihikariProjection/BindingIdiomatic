@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using InteropFunctions = Hosihikari.Bindings.LeviLamina.Interop.ll.memory.Functions;
+using InteropFunctions = global::Hosihikari.Binding.LeviLamina.Interop.ll.memory.Functions;
 
 namespace Hosihikari.Binding.LeviLamina;
 

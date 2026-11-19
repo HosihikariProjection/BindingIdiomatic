@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using InteropScheduler = Hosihikari.Bindings.Endstone.Interop.endstone.Scheduler;
+using InteropScheduler = global::Hosihikari.Binding.Endstone.Interop.endstone.Scheduler;
 
 namespace Hosihikari.Binding.Endstone;
 
